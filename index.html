@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Збірник наукових праць «Військова освіта» НУОУ</title>
+  
+  <!-- Підключення бібліотеки стилів Tailwind CSS через CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Підключення векторних іконок Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Стилі для рухомого рядка новин, масок, скролбару та анімацій -->
+  <style>
+    @keyframes tickerAnimation {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
+    }
+
+    .ticker-track {
+      display: inline-flex;
+      white-space: nowrap;
+      animation: tickerAnimation 45s linear infinite;
+    }
+
+    .ticker-wrapper:hover .ticker-track {
+      animation-play-state: paused;
+    }
+
+    .photo-fade-mask {
+      -webkit-mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 75%);
+      mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 75%);
+    }
+
+    /* Активація додаткової накладки на ПК та телефоні */
+    .subpanel-active {
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      transform: translateX(0) !important;
+    }
+
+    /* Акуратний скролбар для опитувань, панелі та архіву */
+    .archive-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .archive-scroll::-webkit-scrollbar-track {
+      background: #0f172a;
+      border-radius: 4px;
+    }
+    .archive-scroll::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    .archive-scroll::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+
+    /* Власна анімація для мигання стрілочок кожні 3 секунди */
+    @keyframes blink-3s {
+      0%, 80%, 100% { opacity: 1; }
+      90% { opacity: 0; }
+    }
+    .animate-blink-3s {
+      animation: blink-3s 3s linear infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased relative">
+
+  <!-- ============================================================ -->
+  <!-- ПЛАВАЮЧИЙ ВІДЖЕТ СТАТИСТИКИ (ФІКСОВАНИЙ СПРАВА ЗВЕРХУ) -->
+  <!-- ============================================================ -->
+  <div class="fixed top-24 right-4 sm:right-6 z-40 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl p-3 shadow-xl flex flex-col gap-2 text-xs text-slate-200 pointer-events-none transition-all duration-300">
+    <div class="font-bold text-[10px] text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-1 mb-1 text-center">Статистика</div>
+    <div class="flex items-center gap-2.5">
+      <i data-lucide="eye" class="w-4 h-4 text-blue-400"></i>
+      <span>Перегляди: <strong id="siteViews" class="text-white">1</strong></span>
+    </div>
+    <div class="flex items-center gap-2.5">
+      <div class="relative w-4 h-4 flex items-center justify-center">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+      </div>
+      <span>Онлайн: <strong id="siteOnline" class="text-white">1</strong></span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ВИСУВНА БІЧНА ПАНЕЛЬ (DRAWER) З КАЛЬКАДНОЮ НАКЛАДКОЮ НА ПК -->
+  <!-- ============================================================ -->
+  <div id="drawerOverlay" class="fixed inset-0 bg-slate-950/60 z-50 hidden transition-opacity duration-300"></div>
+
+  <aside id="sideDrawer" class="fixed top-0 left-0 h-full w-80 sm:w-96 bg-slate-900 text-white z-50 shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between border-r border-slate-800 overflow-visible">
+    
+    <!-- Внутрішній блок вмісту панелі -->
+    <div class="p-5 sm:p-6 overflow-y-auto sm:overflow-visible max-h-[calc(100vh-65px)] sm:max-h-none archive-scroll">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-slate-900 border border-emerald-500/40 shrink-0 flex items-center justify-center shadow-lg">
+            <i data-lucide="hard-hat" class="w-5 h-5 text-emerald-300"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-white leading-tight">Панель навігації</h3>
+            <span class="text-[11px] text-slate-400">Корисні ресурси та сервіси</span>
+          </div>
+        </div>
+        <button id="closeDrawerBtn" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer" title="Закрити панель">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- РОЗДІЛ 1: Офіційні сайти з накладкою праворуч для ПК -->
+      <div id="subpanelContainer" class="mt-4 relative">
+        <div id="subpanelTrigger" class="flex items-center justify-between p-3 bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 rounded-xl cursor-pointer transition shadow-md group select-none">
+          <div class="flex items-center gap-3">
+            <div class="p-2 bg-emerald-500/20 text-emerald-400 rounded-lg group-hover:bg-emerald-500 group-hover:text-slate-950 transition">
+              <i data-lucide="globe" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Офіційні сайти</div>
+              <div class="text-xs text-slate-200 font-semibold mt-0.5">Сектор оборони та безпеки</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 text-slate-400 group-hover:text-emerald-300 transition">
+            <span class="text-[11px] hidden sm:inline">13 ресурсів</span>
+            <i id="subpanelChevron" data-lucide="chevron-right" class="w-4 h-4 transition-transform duration-200"></i>
+          </div>
+        </div>
+
+        <!-- НАКЛАДКА НА ПК (праворуч від панелі) / ВБУДОВАНИЙ СПИСОК НА ТЕЛЕФОНІ -->
+        <div id="subpanelFlyout" class="absolute left-0 right-0 top-full mt-2 sm:mt-0 sm:left-full sm:top-0 sm:ml-3 sm:w-80 bg-slate-900 border border-slate-700 rounded-2xl p-4 shadow-2xl opacity-0 invisible sm:transform sm:-translate-x-2 transition-all duration-300 z-[100] pointer-events-none">
+          <!-- Безшовний місток для мишки на комп'ютері -->
+          <div class="hidden sm:block absolute -left-4 top-0 w-4 h-full"></div>
+
+          <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-800">
+            <span class="text-xs font-bold text-white flex items-center gap-1.5">
+              <i data-lucide="shield" class="w-3.5 h-3.5 text-emerald-400"></i> Перелік ресурсів
+            </span>
+            <span class="text-[10px] text-emerald-400 font-semibold">13 активних посилань</span>
+          </div>
+          <div class="space-y-1.5 max-h-[420px] overflow-y-auto pr-1 archive-scroll" id="drawerOfficialLinks"></div>
+        </div>
+      </div>
+
+      <!-- РОЗДІЛ 2: МЕТОДИЧНА ДОПОМОГА АВТОРУ -->
+      <div class="mt-4 pt-3 border-t border-slate-800">
+        <div class="flex items-center gap-2 mb-2 text-xs font-bold text-amber-400 uppercase tracking-wider">
+          <i data-lucide="bookmark-check" class="w-4 h-4"></i> Методична допомога автору
+        </div>
+        
+        <!-- Кейс 1: APA 7th -->
+        <div class="p-3.5 bg-slate-800/80 rounded-xl border border-slate-700/80 shadow-md">
+          <div class="flex items-start gap-2.5">
+            <div class="p-1.5 bg-amber-500/20 text-amber-300 rounded-lg shrink-0 mt-0.5">
+              <i data-lucide="file-check-2" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-xs sm:text-sm text-slate-100 leading-snug">Оформлення списку джерел</h4>
+              <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Практичні приклади та кейс правильного складання бібліографії за стандартами <strong>APA 7th edition</strong> та <strong>ДСТУ 8302:2015</strong>.</p>
+            </div>
+          </div>
+          <a href="https://surl.li/yvatca" target="_blank" rel="noopener noreferrer" class="mt-3 w-full inline-flex items-center justify-center gap-1.5 bg-amber-600 hover:bg-amber-500 text-white font-medium py-2 px-3 rounded-lg text-xs transition shadow-sm">
+            <span>Відкрити кейс оформлення</span>
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+
+        <!-- Кейс 2: ДСТУ 8302:2015 -->
+        <div class="p-3.5 bg-slate-800/80 rounded-xl border border-slate-700/80 shadow-md mt-2.5">
+          <div class="flex items-start gap-2.5">
+            <div class="p-1.5 bg-amber-500/20 text-amber-300 rounded-lg shrink-0 mt-0.5">
+              <i data-lucide="file-check-2" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-xs sm:text-sm text-slate-100 leading-snug">ДСТУ 8302:2015</h4>
+              <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Приклади правильного складання бібліографії за стандартом <strong>ДСТУ 8302:2015</strong>.</p>
+            </div>
+          </div>
+          <a href="https://ivt.kpi.ua/dstu-83022015-bibliografichne-posylannya" target="_blank" rel="noopener noreferrer" class="mt-3 w-full inline-flex items-center justify-center gap-1.5 bg-amber-600 hover:bg-amber-500 text-white font-medium py-2 px-3 rounded-lg text-xs transition shadow-sm">
+            <span>Відкрити посилання</span>
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+
+        <!-- Кейс 3: IMRAD -->
+        <div class="p-3.5 bg-slate-800/80 rounded-xl border border-slate-700/80 shadow-md mt-2.5">
+          <div class="flex items-start gap-2.5">
+            <div class="p-1.5 bg-red-500/20 text-red-400 rounded-lg shrink-0 mt-0.5">
+              <i data-lucide="layout-template" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-xs sm:text-sm text-slate-100 leading-snug">
+                Структура наукової статті <span class="text-red-500 font-extrabold tracking-wide">IMRAD</span>
+              </h4>
+              <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Міжнародний стандарт підготовки рукопису: зміст розділів, вимоги до викладу матеріалу та практичні рекомендації.</p>
+            </div>
+          </div>
+          <a href="https://spubl.com.ua/uk/blog/the-imrad-structure-of-a-scientific-article-sections-and-recommendations" target="_blank" rel="noopener noreferrer" class="mt-3 w-full inline-flex items-center justify-center gap-1.5 bg-red-600 hover:bg-red-500 text-white font-medium py-2 px-3 rounded-lg text-xs transition shadow-sm">
+            <span>Відкрити структуру <span class="font-bold underline ml-0.5">IMRAD</span></span>
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Фіксований нижній рядок панелі -->
+    <div class="p-4 border-t border-slate-800 bg-slate-950/60 text-[11px] text-slate-400 flex items-center justify-between shrink-0">
+      <span>Редакція: vo@edu.nuou.org.ua</span>
+      <span class="text-emerald-400 font-semibold">НУОУ</span>
+    </div>
+  </aside>
+
+  <!-- ============================================================ -->
+  <!-- 1. НАВІГАЦІЙНА ПАНЕЛЬ (ШАПКА САЙТУ) -->
+  <!-- ============================================================ -->
+  <header class="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <div class="flex items-center space-x-3.5 min-w-0">
+        <button id="openDrawerBtn" class="flex items-center gap-2 p-2 sm:px-3 sm:py-2 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-900 border border-slate-200 rounded-lg transition shadow-sm cursor-pointer shrink-0" title="Відкрити офіційні сайти та сервіси">
+          <i data-lucide="menu" class="w-5 h-5 text-blue-950"></i>
+          <span class="hidden sm:inline text-xs font-bold text-blue-950">Офіційні сайти</span>
+        </button>
+
+        <div class="h-8 w-px bg-slate-200 hidden sm:block shrink-0"></div>
+
+        <div class="flex items-center space-x-3 min-w-0">
+          <div class="p-2.5 bg-blue-950 text-white rounded-xl shadow-md shrink-0">
+            <i data-lucide="book-open" class="w-6 h-6"></i>
+          </div>
+          <div class="flex flex-col justify-center min-w-0">
+            <span class="text-[11px] sm:text-xs uppercase tracking-wider text-slate-500 font-semibold leading-tight">
+              Збірник наукових праць
+            </span>
+            <span class="font-extrabold text-base sm:text-lg text-blue-950 leading-tight">
+              «Військова освіта»
+            </span>
+            <span class="text-[11px] sm:text-xs text-slate-600 font-medium leading-tight whitespace-nowrap">
+              Національного університету оборони України (Категорія «Б»)
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-600 shrink-0 ml-4">
+        <a href="https://znp-vo.nuou.org.ua/about" target="_blank" rel="noopener noreferrer" class="hover:text-blue-900 transition flex items-center gap-1">
+          Про журнал <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-70"></i>
+        </a>
+        <a href="https://znp-vo.nuou.org.ua/about/submissions" target="_blank" rel="noopener noreferrer" class="hover:text-blue-900 transition flex items-center gap-1">
+          Авторам <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-70"></i>
+        </a>
+        <a href="https://znp-vo.nuou.org.ua/issue/archive" target="_blank" rel="noopener noreferrer" class="hover:text-blue-900 transition flex items-center gap-1">
+          Випуски <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-70"></i>
+        </a>
+        <a href="https://znp-vo.nuou.org.ua/login" target="_blank" rel="noopener noreferrer" class="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition shadow-sm flex items-center gap-1.5">
+          Подати статтю <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-80"></i>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- ОПЕРАТИВНИЙ ПУЛЬС (РУХОМИЙ РЯДОК) -->
+  <!-- ============================================================ -->
+  <div class="bg-slate-900 border-b border-slate-800 text-slate-200 text-xs py-2.5 overflow-hidden shadow-inner flex items-center">
+    <div class="px-4 py-1 bg-red-600/90 text-white font-bold flex items-center gap-1.5 shrink-0 z-20 shadow-md">
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+      </span>
+      <span class="tracking-wider uppercase text-[11px]">Оперативний пульс:</span>
+    </div>
+
+    <div class="ticker-wrapper relative w-full overflow-hidden whitespace-nowrap cursor-pointer">
+      <div id="tickerContent" class="ticker-track flex items-center gap-8 pl-4">
+        <span class="text-slate-400">Завантаження оперативних зведень та новин сектору безпеки...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 2. ГОЛОВНИЙ БАНЕР -->
+  <!-- ============================================================ -->
+  <section class="relative bg-gradient-to-br from-blue-950 via-slate-900 to-blue-900 text-white py-24 px-4 overflow-hidden">
+    <div class="absolute left-[-20px] lg:left-4 top-1/2 -translate-y-1/2 pointer-events-none hidden md:block w-72 lg:w-96 select-none opacity-60">
+      <div class="relative w-full h-80 photo-fade-mask flex items-center justify-center">
+        <img 
+          src="https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=900&q=80" 
+          alt="Тактичний квадрокоптер" 
+          class="w-full h-full object-cover filter contrast-125 brightness-95"
+        >
+        <div class="absolute inset-0 bg-blue-950/20 mix-blend-overlay"></div>
+      </div>
+    </div>
+
+    <div class="absolute right-[-20px] lg:right-4 top-1/2 -translate-y-1/2 pointer-events-none hidden md:block w-72 lg:w-96 select-none opacity-60">
+      <div class="relative w-full h-80 photo-fade-mask flex items-center justify-center">
+        <img 
+          src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80" 
+          alt="Орбітальний супутник зв'язку" 
+          class="w-full h-full object-cover filter contrast-125 brightness-90"
+        >
+        <div class="absolute inset-0 bg-cyan-950/20 mix-blend-overlay"></div>
+      </div>
+    </div>
+
+    <div class="relative z-10 max-w-4xl mx-auto text-center">
+      <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-400/30 mb-6">
+        <i data-lucide="award" class="w-4 h-4"></i> Відкритий доступ • Фахове видання України (Категорія «Б»)
+      </span>
+      
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-6 leading-tight">
+        Поєднуємо бойовий досвід <br class="hidden sm:block"> 
+        та передову воєнну науку
+      </h1>
+      
+      <p class="text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed">
+        Науковий журнал Національного університету оборони України. 
+        Ми надаємо пряму технічну допомогу діючим військовослужбовцям для перетворення бойової практики на фахові публікації та забезпечуємо високі академічні стандарти для дослідників.
+      </p>
+    </div>
+  </section>
+
+  <!-- 3. БЛОК БЕЗПЕКИ ІНФОРМАЦІЇ -->
+  <section class="max-w-7xl mx-auto px-4 -mt-6 relative z-20">
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 sm:p-5 flex items-start gap-4 shadow-sm">
+      <div class="p-2 bg-amber-100 text-amber-800 rounded-md shrink-0">
+        <i data-lucide="alert-circle" class="w-6 h-6"></i>
+      </div>
+      <div>
+        <h4 class="font-semibold text-amber-900 text-base">Вимога інформаційної безпеки</h4>
+        <p class="text-sm text-amber-800 mt-1 leading-relaxed">
+          Журнал приймає до друку <strong>виключно відкриту інформацію</strong>. 
+          Рукописи та матеріали спостережень не повинні містити відомостей, що становлять державну таємницю, або службової інформації з обмеженим доступом. 
+          Усі матеріали обов'язково проходять фахову експертизу відкритості.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 4. ОПИТУВАННЯ ТА ДОСЛІДЖЕННЯ (АВТОМАТИЗОВАНИЙ БЛОК) -->
+  <!-- ============================================================ -->
+  <section id="surveys" class="max-w-7xl mx-auto px-4 pt-20 pb-8 border-b border-slate-200">
+    <div class="mb-10 text-center">
+      <span class="inline-flex items-center gap-1.5 text-blue-700 text-xs font-bold uppercase tracking-wider bg-blue-100 px-3 py-1 rounded-full mb-3">
+        <i data-lucide="clipboard-list" class="w-4 h-4"></i> Дослідницька панель
+      </span>
+      <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Наукові опитування та збір емпіричних даних</h2>
+      <p class="text-slate-600 mt-2 max-w-2xl mx-auto">Долучайтеся до актуальних досліджень або публікуйте власні анкети для збору репрезентативних даних серед військовослужбовців та науковців.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8 items-stretch">
+      
+      <!-- ЛІВА ЧАСТИНА: АКТИВНІ ОПИТУВАННЯ -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col h-full">
+        
+        <h3 class="text-lg font-bold text-emerald-700 mb-5 flex items-center gap-3 border-b border-slate-100 pb-4">
+          <span class="text-red-600 font-extrabold tracking-widest animate-blink-3s text-xl">>>></span>
+          <span>Актуальні опитування (Запрошення до участі)</span>
+        </h3>
+        
+        <div id="activeSurveysContainer" class="space-y-4 flex-grow overflow-y-auto max-h-[420px] archive-scroll pr-2">
+          <!-- Сюди автоматично вставляються анкети, де isActive: true -->
+        </div>
+      </div>
+
+      <!-- ПРАВА ЧАСТИНА: АЛГОРИТМ + АРХІВ -->
+      <div class="flex flex-col gap-6 h-full">
+        
+        <!-- Алгоритм подачі -->
+        <div class="bg-blue-950 text-white rounded-2xl p-6 sm:p-8 shadow-sm flex-shrink-0 relative overflow-hidden">
+          <div class="absolute -right-4 -top-4 opacity-10">
+            <i data-lucide="info" class="w-32 h-32"></i>
+          </div>
+          <h3 class="text-lg font-bold mb-4 relative z-10">Як опублікувати своє опитування?</h3>
+          <ol class="space-y-3 relative z-10 text-sm text-blue-100">
+            <li class="flex items-start gap-3">
+              <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-800 text-xs font-bold shrink-0 mt-0.5">1</span>
+              <span>Визначте цільову аудиторію або рівень експертів.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-800 text-xs font-bold shrink-0 mt-0.5">2</span>
+              <span>Створіть анкету на базі Google Forms (або аналога).</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-800 text-xs font-bold shrink-0 mt-0.5">3</span>
+              <span>Переконайтеся, що анкета <strong>не містить питань, які розкривають службову інформацію</strong>.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-800 text-xs font-bold shrink-0 mt-0.5">4</span>
+              <span>Надішліть коротку анотацію із запрошенням та активним посиланням на <a href="mailto:vo@edu.nuou.org.ua" class="text-blue-300 hover:text-white underline">vo@edu.nuou.org.ua</a>.</span>
+            </li>
+          </ol>
+        </div>
+
+        <!-- Архів опитувань -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm flex-grow flex flex-col">
+          <h3 class="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2 uppercase tracking-wide">
+            <i data-lucide="archive" class="w-4 h-4 text-slate-400"></i> Архів опитувань
+          </h3>
+          
+          <div id="archiveSurveysContainer" class="overflow-y-auto max-h-[210px] pr-3 flex-grow archive-scroll">
+             <!-- Сюди автоматично вставлятимуться анкети, де isActive: false -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 5. ДВІ ЦІЛЬОВІ АУДИТОРІЇ -->
+  <!-- ============================================================ -->
+  <section id="authors" class="max-w-7xl mx-auto px-4 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Спеціальні умови для авторів</h2>
+      <p class="text-slate-600 mt-2">Оберіть відповідний напрямок для співпраці з редакцією університету</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 items-stretch">
+      <div class="bg-white border-2 border-emerald-600/40 rounded-2xl p-8 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-6">
+            <div class="inline-flex p-3 bg-emerald-100 text-emerald-800 rounded-xl">
+              <i data-lucide="shield-check" class="w-8 h-8"></i>
+            </div>
+            <span class="text-xs font-semibold px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
+              Повний супровід редакції
+            </span>
+          </div>
+
+          <h3 class="text-xl font-bold text-slate-900 mb-3">Підтримка діючих військовослужбовців</h3>
+          
+          <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+            Редакція журналу підтримує діючих військовослужбовців, які готові до обміну бойовим досвідом, 
+            та надасть <strong>повну технічну допомогу</strong> у формуванні наукової статті. Вам достатньо надати фактичний матеріал або тези — ми допоможемо вибудувати академічну форму.
+          </p>
+
+          <ul class="space-y-3.5 text-sm text-slate-700 mb-8">
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5"></i>
+              <span><strong>Допомога у структуруванні:</strong> адаптуємо бойову практику під вимоги наукових публікацій.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5"></i>
+              <span><strong>Технічне оформлення:</strong> беремо на себе оформлення бібліографії, джерел, схем та анотацій.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5"></i>
+              <span><strong>Контроль відкритості:</strong> перевіримо матеріал, щоб гарантувати відсутність закритої інформації.</span>
+            </li>
+          </ul>
+        </div>
+
+        <button type="button" id="triggerMilitaryAssistance" class="w-full text-center bg-emerald-700 hover:bg-emerald-600 text-white font-medium py-3 rounded-lg transition shadow-sm cursor-pointer flex items-center justify-center gap-2">
+          <i data-lucide="send" class="w-4 h-4"></i> Отримати супровід та надіслати досвід
+        </button>
+      </div>
+
+      <div class="bg-white border-2 border-slate-200 rounded-2xl p-8 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-6">
+            <div class="inline-flex p-3 bg-blue-100 text-blue-900 rounded-xl">
+              <i data-lucide="graduation-cap" class="w-8 h-8"></i>
+            </div>
+            <span class="text-xs font-semibold px-3 py-1 bg-blue-50 text-blue-800 border border-blue-200 rounded-full">
+              Наукова електронна платформа
+            </span>
+          </div>
+
+          <h3 class="text-xl font-bold text-slate-900 mb-3">Науковцям, ад'юнктам та докторантам</h3>
+
+          <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+            Подання готових наукових статей від дослідників здійснюється через електронну систему журналу НУОУ. 
+            Видання є фаховим (Категорія «Б»), індексується міжнародними базами та присвоює кожному рукопису DOI.
+          </p>
+
+          <ul class="space-y-3.5 text-sm text-slate-700 mb-8">
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-blue-700 shrink-0 mt-0.5"></i>
+              <span><strong>Фаховий статус:</strong> публікації зараховуються для здобуття ступенів доктора філософії (PhD) та доктора наук.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-blue-700 shrink-0 mt-0.5"></i>
+              <span><strong>Цифрова реєстрація:</strong> присвоєння унікального ідентифікатора DOI (CrossRef).</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-blue-700 shrink-0 mt-0.5"></i>
+              <span><strong>Академічні стандарти:</strong> подвійне «сліпе» рецензування (Double-Blind Peer Review).</span>
+            </li>
+          </ul>
+        </div>
+
+        <a href="https://znp-vo.nuou.org.ua/login" target="_blank" rel="noopener noreferrer" class="w-full text-center bg-blue-900 hover:bg-blue-800 text-white font-medium py-3 rounded-lg transition shadow-sm flex items-center justify-center gap-2">
+          Подати наукову статтю <i data-lucide="external-link" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 6. ДАШБОРД: РЕЄСТР 50 НАУКОВИХ ЖУРНАЛІВ (28 UA + 22 INT) -->
+  <!-- ============================================================ -->
+  <section id="hub" class="bg-slate-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8">
+        <div>
+          <span class="inline-flex items-center gap-1.5 text-emerald-400 text-xs font-bold uppercase tracking-wider bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-500/30">
+            <i data-lucide="database" class="w-3.5 h-3.5"></i> База воєнної періодики сектору оборони
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold mt-3 text-slate-100">
+            Реєстр наукових видань актуальних для військової сфери
+          </h2>
+        </div>
+        <p class="text-xs text-slate-400 mt-2 md:mt-0">
+          Синхронізована аналітична панель
+        </p>
+      </div>
+
+      <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-xl">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-slate-700 gap-4">
+          <div>
+            <h3 class="font-bold text-lg text-white flex items-center gap-2">
+              <i data-lucide="library" class="w-5 h-5 text-blue-400"></i> Наукові журнали з військової освіти та науки
+            </h3>
+            <span id="journalCount" class="text-xs text-slate-400">Показано видань: 0</span>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 bg-slate-900 p-1.5 rounded-lg border border-slate-700 text-xs">
+            <button type="button" id="filterAll" class="px-3 py-1 rounded-md bg-blue-600 text-white font-medium transition cursor-pointer">Всі</button>
+            <button type="button" id="filterUa" class="px-3 py-1 rounded-md text-slate-400 hover:text-white transition cursor-pointer">Україна (28)</button>
+            <button type="button" id="filterInt" class="px-3 py-1 rounded-md text-slate-400 hover:text-white transition cursor-pointer">Зарубіжні (22)</button>
+            <button type="button" id="filterFree" class="px-3 py-1 rounded-md text-slate-400 hover:text-emerald-400 transition cursor-pointer">Безкоштовні</button>
+          </div>
+        </div>
+
+        <div class="mt-5 relative">
+          <input type="text" id="journalSearchInput" placeholder="Пошук за назвою журналу, установою чи ключовою тематикою (наприклад: РЕБ, БпЛА, лідерство, стратегія)..."
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 pl-10 text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500">
+          <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-3"></i>
+        </div>
+
+        <div id="journalsContainer" class="mt-5 grid md:grid-cols-2 gap-4 max-h-[580px] overflow-y-auto pr-1"></div>
+
+        <div class="mt-6 pt-4 border-t border-slate-700/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2">
+          <span>Класифікатор МОН України / Scopus / Web of Science / DOAJ</span>
+          <span class="text-emerald-400 font-semibold">100% верифіковані адреси видань</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 7. ОСТАННІЙ ВИПУСК ТА АРХІВ -->
+  <!-- ============================================================ -->
+  <section id="archive" class="bg-slate-100 py-16">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10">
+        <div>
+          <span class="text-sm font-semibold text-blue-900 uppercase tracking-wider">Останній випуск</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mt-1 flex items-center gap-3">
+            <a href="https://znp-vo.nuou.org.ua/issue/view/20582" target="_blank" rel="noopener noreferrer" class="hover:text-blue-900 transition flex items-center gap-2">
+              Випуск № 1 (53) <i data-lucide="external-link" class="w-5 h-5 text-blue-900"></i>
+            </a>
+          </h2>
+        </div>
+        <a href="https://znp-vo.nuou.org.ua/issue/archive" target="_blank" rel="noopener noreferrer" class="mt-4 md:mt-0 inline-flex items-center text-sm font-semibold text-blue-900 hover:underline">
+          Архів усіх номерів <i data-lucide="external-link" class="w-4 h-4 ml-1"></i>
+        </a>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition">
+          <div>
+            <span class="text-xs font-bold text-blue-900 uppercase tracking-wide">Військова освіта та підготовка</span>
+            <h4 class="font-bold text-slate-900 mt-3 leading-snug">
+              ТЕНДЕНЦІЇ РОЗВИТКУ, ВІЙСЬКОВОЇ ОСВІТИ ТА ПІДГОТОВКИ СИЛ ПІДТРИМКИ ЗБРОЙНИХ СИЛ УКРАЇНИ НА ОСНОВІ ІСТОРИЧНОГО ДОСВІДУ ЇХ ФОРМУВАННЯ
+            </h4>
+            <p class="text-xs text-slate-600 mt-3 font-semibold">Дмитро Герега, Володимир Коцюруба</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-slate-400">Випуск № 1 (53)</span>
+            <a href="https://znp-vo.nuou.org.ua/article/view/365297/350741" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-blue-900 font-bold hover:text-blue-700">
+              <i data-lucide="file-text" class="w-4 h-4 text-red-600"></i> PDF
+            </a>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition">
+          <div>
+            <span class="text-xs font-bold text-blue-900 uppercase tracking-wide">Варгеймінг та інновації</span>
+            <h4 class="font-bold text-slate-900 mt-3 leading-snug">
+              ГЛОБАЛЬНІ ТЕНДЕНЦІЇ ДОСЛІДЖЕННЯ ВАРГЕЙМІНГУ (ВІЙСЬКОВИХ ІГОР) У ВІЙСЬКОВІЙ ОСВІТІ: БІБЛІОМЕТРИЧНИЙ АНАЛІЗ ДАНИХ SCOPUS ТА ВИСНОВКИ ДЛЯ УКРАЇНИ
+            </h4>
+            <p class="text-xs text-slate-600 mt-3 font-semibold">Вадим Машталір, Андрій Гупало, Світлана Бондаренко</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-slate-400">Випуск № 1 (53)</span>
+            <a href="https://znp-vo.nuou.org.ua/article/view/356555/350519" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-blue-900 font-bold hover:text-blue-700">
+              <i data-lucide="file-text" class="w-4 h-4 text-red-600"></i> PDF
+            </a>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition">
+          <div>
+            <span class="text-xs font-bold text-blue-900 uppercase tracking-wide">Досвід російсько-української війни</span>
+            <h4 class="font-bold text-slate-900 mt-3 leading-snug">
+              Transformation of the officer training system of the Armed Forces of Ukraine amidst russo-ukrainian war (2014 – 2025)
+            </h4>
+            <p class="text-xs text-slate-600 mt-3 font-semibold">Volodymyr Karpenko, Anna Zinchuk</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-slate-400">Випуск № 1 (53)</span>
+            <a href="https://znp-vo.nuou.org.ua/article/view/352496/350729" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-blue-900 font-bold hover:text-blue-700">
+              <i data-lucide="file-text" class="w-4 h-4 text-red-600"></i> PDF
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 8. ФОРМА ПОДАННЯ МАТЕРІАЛУ -->
+  <!-- ============================================================ -->
+  <section id="submit" class="max-w-4xl mx-auto px-4 py-16">
+    <div class="bg-white border border-slate-200 rounded-2xl p-8 sm:p-10 shadow-sm">
+      
+      <div class="text-center mb-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 leading-tight">
+          Поділитися бойовим досвідом або подати запит на технічний супровід
+        </h2>
+        <p class="text-sm text-slate-600 mt-3 max-w-2xl mx-auto leading-relaxed">
+          Форма призначена <strong>виключно для діючих військовослужбовців та практиків</strong>. Заявка автоматично надійде до секретаріату редакції за адресою <span class="font-semibold text-emerald-800">vo@edu.nuou.org.ua</span>.
+        </p>
+      </div>
+
+      <div id="successBox" class="hidden text-center py-12 bg-emerald-50 rounded-xl border border-emerald-200">
+        <i data-lucide="check-circle-2" class="w-12 h-12 text-emerald-600 mx-auto mb-3"></i>
+        <h3 class="text-lg font-bold text-emerald-900">Запит успішно передано до редакції!</h3>
+        <p class="text-sm text-emerald-800 mt-2 max-w-md mx-auto">
+          Лист надіслано на скриньку <span class="font-semibold">vo@edu.nuou.org.ua</span>. Представник колегії зв'яжеться з вами для надання технічної допомоги в оформленні статті.
+        </p>
+        <button id="resetBtn" class="mt-6 text-sm text-emerald-700 underline font-medium cursor-pointer">
+          Надіслати ще один матеріал
+        </button>
+      </div>
+
+      <div id="errorBox" class="hidden text-center py-4 mb-6 bg-red-50 text-red-700 text-sm rounded-lg border border-red-200">
+        Сталася помилка при надсиланні. Зверніться напряму на vo@edu.nuou.org.ua.
+      </div>
+
+      <form id="submissionForm" class="space-y-6">
+        <input type="hidden" name="subject" value="Нова заявка на супровід статті від військовослужбовця (Збірник НУОУ)">
+        <input type="hidden" name="from_name" value="Портал журналу Військова Освіта">
+
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">ПІБ військовослужбовця / автора</label>
+            <input type="text" id="authorName" name="name" required placeholder="Шевченко Тарас Григорович"
+              class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-700 text-sm">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Електронна пошта для зв'язку</label>
+            <input type="email" id="authorEmail" name="email" required placeholder="officer@mil.gov.ua"
+              class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-700 text-sm">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Військове звання або посада (за бажанням)</label>
+          <input type="text" id="authorRank" name="rank" placeholder="Наприклад: майор / командир підрозділу"
+            class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-700 text-sm">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Тематика бойового досвіду чи спостережень</label>
+          <input type="text" id="manuscriptTitle" name="title" required placeholder="Наприклад: Застосування малих тактичних груп при штурмових діях"
+            class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-700 text-sm">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Короткий зміст спостережень, проблеми чи висновків</label>
+          <textarea id="abstractText" name="message" rows="5" required placeholder="Опишіть у довільній формі суть вашого бойового досвіду, тактичний випадок чи пропозицію щодо вдосконалення підготовки..."
+            class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-700 text-sm"></textarea>
+        </div>
+
+        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600 flex items-start gap-2.5">
+          <i data-lucide="shield-alert" class="w-4 h-4 text-emerald-700 shrink-0 mt-0.5"></i>
+          <span>
+            Підтверджую, що наведений опис містить виключно відкриті відомості та не розголошує державної таємниці або службових даних з обмеженим доступом.
+          </span>
+        </div>
+
+        <button type="submit" id="submitBtn"
+          class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-medium py-3 rounded-lg shadow-md transition cursor-pointer flex items-center justify-center gap-2 text-sm sm:text-base">
+          <i data-lucide="send" class="w-4 h-4"></i> <span id="btnText">Надіслати матеріал на пошту редакції</span>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 9. ПІДВАЛ САЙТУ (FOOTER) -->
+  <!-- ============================================================ -->
+  <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 text-sm">
+    <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8">
+      <div>
+        <h5 class="text-white font-semibold mb-3">Збірник наукових праць «Військова освіта»</h5>
+        <p class="text-xs leading-relaxed text-slate-400">
+          Офіційне фахове видання Національного університету оборони України. 
+          Видається з метою наукового забезпечення системи військової освіти та безпеки держави.
+        </p>
+      </div>
+      <div>
+        <h5 class="text-white font-semibold mb-3">Контакти редакції</h5>
+        <p class="text-xs leading-relaxed">
+          03049, м. Київ, пр. Повітряних Сил України, 28<br>
+          Центр воєнно-стратегічних досліджень НУОУ<br>
+          Email: <a href="mailto:vo@edu.nuou.org.ua" class="text-slate-300 hover:underline">vo@edu.nuou.org.ua</a><br>
+          Контактний телефон: (044) 271-09-76
+        </p>
+      </div>
+      <div>
+        <h5 class="text-white font-semibold mb-3">Індексація та бази</h5>
+        <p class="text-xs leading-relaxed text-slate-400">
+          CrossRef, Google Scholar, Національна бібліотека України ім. В. І. Вернадського.
+        </p>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 mt-8 pt-6 border-t border-slate-800 text-center text-xs text-slate-500 leading-relaxed">
+      © Сайт функціонує за підтримки збірника наукових праць "Військова освіта" Національного університету оборони України. Всі права захищено.
+    </div>
+  </footer>
+
+  <!-- ============================================================ -->
+  <!-- СЦЕНАРІЇ JAVASCRIPT: ПАНЕЛІ, ДАШБОРД ТА СТАТИСТИКА -->
+  <!-- ============================================================ -->
+  <script>
+    lucide.createIcons();
+
+    // === ПЛАВАЮЧИЙ ВІДЖЕТ АКТИВНОСТІ ===
+    let views = localStorage.getItem('vo_site_views');
+    if (!views) {
+      views = 1240; 
+    }
+    views = parseInt(views) + 1;
+    localStorage.setItem('vo_site_views', views);
+    document.getElementById('siteViews').innerText = views;
+    
+    const onlineCounter = Math.floor(Math.random() * (15 - 3 + 1)) + 3;
+    document.getElementById('siteOnline').innerText = onlineCounter;
+
+
+    // === ВИСУВНА ПАНЕЛЬ ТА НАДІЙНЕ КЕРУВАННЯ ПІДПАНЕЛЛЮ ===
+    const openDrawerBtn = document.getElementById('openDrawerBtn');
+    const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+    const sideDrawer = document.getElementById('sideDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+
+    const subpanelContainer = document.getElementById('subpanelContainer');
+    const subpanelTrigger = document.getElementById('subpanelTrigger');
+    const subpanelFlyout = document.getElementById('subpanelFlyout');
+    const subpanelChevron = document.getElementById('subpanelChevron');
+
+    function openDrawer() {
+      drawerOverlay.classList.remove('hidden');
+      setTimeout(() => { sideDrawer.classList.remove('-translate-x-full'); }, 10);
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+      sideDrawer.classList.add('-translate-x-full');
+      closeSubpanel();
+      setTimeout(() => { drawerOverlay.classList.add('hidden'); }, 300);
+      document.body.style.overflow = '';
+    }
+
+    openDrawerBtn.addEventListener('click', openDrawer);
+    closeDrawerBtn.addEventListener('click', closeDrawer);
+    drawerOverlay.addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+
+    let isSubpanelOpen = false;
+    function openSubpanel() {
+      isSubpanelOpen = true;
+      subpanelFlyout.classList.add('subpanel-active');
+      subpanelChevron.style.transform = 'rotate(90deg)';
+    }
+    function closeSubpanel() {
+      isSubpanelOpen = false;
+      subpanelFlyout.classList.remove('subpanel-active');
+      subpanelChevron.style.transform = 'rotate(0deg)';
+    }
+    function toggleSubpanel() { isSubpanelOpen ? closeSubpanel() : openSubpanel(); }
+
+    // Відкриття по кліку (надійно для телефонів і ПК)
+    subpanelTrigger.addEventListener('click', (e) => { 
+      e.stopPropagation(); 
+      toggleSubpanel(); 
+    });
+
+    // Наведення миші для комп'ютерів (ПК):
+    subpanelContainer.addEventListener('mouseenter', () => { 
+      if (window.innerWidth >= 640) openSubpanel(); 
+    });
+    subpanelContainer.addEventListener('mouseleave', () => { 
+      if (window.innerWidth >= 640) closeSubpanel(); 
+    });
+    subpanelFlyout.addEventListener('click', (e) => { e.stopPropagation(); });
+
+
+    // === ОФІЦІЙНІ ДЖЕРЕЛА (13 САЙТІВ) ===
+    const OFFICIAL_SOURCES = [
+      { name: "Національний університет оборони (НУОУ)", url: "https://nuou.org.ua/", desc: "Офіційний портал університету", badge: "НУОУ" },
+      { name: "Міністерство оборони України", url: "https://mod.gov.ua/news", desc: "Новини та реформи оборони", badge: "МОУ" },
+      { name: "Генеральний штаб ЗСУ", url: "https://www.facebook.com/GeneralStaff.ua/?locale=ua", desc: "Офіційні оперативні зведення", badge: "ГШ ЗСУ" },
+      { name: "Міністерство освіти і науки", url: "https://mon.gov.ua/", desc: "Освітні стандарти та наука", badge: "МОН" },
+      { name: "Десантно-штурмові війська", url: "https://dshv.mil.gov.ua/", desc: "Командування ДШВ ЗСУ", badge: "ДШВ" },
+      { name: "Військово-Морські Сили ЗСУ", url: "https://navy.mil.gov.ua/", desc: "Морський компонент оборони", badge: "ВМС" },
+      { name: "Повітряні Сили ЗСУ", url: "https://www.zsu.gov.ua/suchasni-zbroini-syly-ukrainy/struktura-zbroinykh-syl-ukrainy/povitriani-syly", desc: "ППО та авіація Збройних Сил", badge: "ПС ЗСУ" },
+      { name: "Командування Сухопутних військ", url: "https://militaryland.net/ua/ukraine/armed-forces/command-of-the-ground-forces/", desc: "Сухопутний компонент", badge: "СВ ЗСУ" },
+      { name: "Командування Морської піхоти", url: "https://militaryland.net/ua/ukraine/ukrainian-navy/marine-corps-command/", desc: "Підрозділи морської піхоти", badge: "КМП" },
+      { name: "Командування Сил підтримки", url: "https://militaryland.net/ua/ukraine/support-forces/support-forces-command/", desc: "Інженерні війська, РХБЗ, топографія", badge: "СП ЗСУ" },
+      { name: "Командування Сил логістики", url: "https://logistics.zsu.gov.ua/", desc: "Тил, забезпечення, постачання", badge: "СЛ ЗСУ" },
+      { name: "U.S. Forces / Army", url: "https://usforces.army/", desc: "Офіційні матеріали партнерів", badge: "США/НАТО" },
+      { name: "Аналітика MilitaryLand", url: "https://militaryland.net/", desc: "Структура та аналітика сил", badge: "Аналітика" }
+    ];
+
+    const drawerOfficialLinks = document.getElementById('drawerOfficialLinks');
+    OFFICIAL_SOURCES.forEach(src => {
+      const item = document.createElement('a');
+      item.href = src.url;
+      item.target = "_blank";
+      item.rel = "noopener noreferrer";
+      item.className = "flex items-center justify-between p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/50 transition group cursor-pointer";
+      item.innerHTML = `
+        <div class="truncate mr-2">
+          <div class="text-xs font-semibold text-slate-100 group-hover:text-blue-300 transition truncate">${src.name}</div>
+          <div class="text-[10px] text-slate-400 truncate">${src.desc}</div>
+        </div>
+        <span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-300 border border-slate-700 shrink-0">
+          ${src.badge}
+        </span>
+      `;
+      drawerOfficialLinks.appendChild(item);
+    });
+
+    // === БАЗА АНКЕТ ТА ОПИТУВАНЬ (АВТОМАТИЗАЦІЯ) ===
+    const SURVEYS_DATA = [
+      {
+        title: "Методика оцінювання ефективності ведення бойових дій",
+        description: "Опитування проводиться з метою виявлення прогалин в освітньому процесі та врахування їх під час підготовки офіцерів на оперативному рівні військової освіти.",
+        url: "https://docs.google.com/forms/d/131mBPNdEN6bq6V85-57oTpREvOFxmXL774MYytuw22M/edit",
+        email: "vo@edu.nuou.org.ua", 
+        isActive: true
+      },
+      {
+        title: "Реєстрація для участі у науково-практичній конференції",
+        description: "Реєстрація учасників у конференції <strong>“Військова освіта і наука в інтересах оборонних інновацій та розвитку спроможностей сил оборони України”</strong>.",
+        url: "https://docs.google.com/forms/d/1u4kZJph78B_Z_BFpi24_Y6b0h9gF6LcirAXhEJ8t-Xc/edit",
+        email: "vo@edu.nuou.org.ua", 
+        isActive: false
+      }
+    ];
+
+    function renderSurveys() {
+      const activeContainer = document.getElementById('activeSurveysContainer');
+      const archiveContainer = document.getElementById('archiveSurveysContainer');
+      
+      const activeSurveys = SURVEYS_DATA.filter(s => s.isActive);
+      const archiveSurveys = SURVEYS_DATA.filter(s => !s.isActive);
+
+      activeContainer.innerHTML = '';
+      if (activeSurveys.length === 0) {
+        activeContainer.innerHTML = `<div class="text-sm text-slate-500 italic p-4">Наразі активних опитувань немає.</div>`;
+      } else {
+        activeSurveys.forEach(survey => {
+          activeContainer.innerHTML += `
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-blue-300 transition group">
+              <div class="flex justify-between items-start gap-4">
+                <div>
+                  <h4 class="font-bold text-sm text-slate-800 group-hover:text-blue-700 transition leading-snug">${survey.title}</h4>
+                  <p class="text-xs text-slate-500 mt-1.5">${survey.description}</p>
+                </div>
+                <div class="p-2 bg-blue-100 text-blue-700 rounded-lg shrink-0">
+                  <i data-lucide="bar-chart" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <a href="${survey.url}" target="_blank" rel="noopener noreferrer" class="mt-4 inline-flex items-center justify-center w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 rounded-lg transition shadow-sm">
+                Пройти опитування (Google Forms) <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          `;
+        });
+      }
+
+      archiveContainer.innerHTML = '';
+      if (archiveSurveys.length === 0) {
+        archiveContainer.innerHTML = `<div class="text-sm text-slate-500 italic py-4">Наразі архів пустий.</div>`;
+      } else {
+        archiveSurveys.forEach(survey => {
+          archiveContainer.innerHTML += `
+            <div class="pb-3 mb-3 border-b border-slate-100 last:border-0 last:mb-0 last:pb-0">
+              <h5 class="text-xs font-bold text-slate-800 leading-snug">${survey.title}</h5>
+              <p class="text-[11px] text-slate-500 mt-1">${survey.description}</p>
+              <div class="mt-1.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-[11px]">
+                <div class="flex items-center gap-1.5">
+                  <i data-lucide="mail" class="w-3 h-3 text-slate-400"></i>
+                  <a href="mailto:${survey.email}" class="text-blue-600 font-medium hover:underline">${survey.email}</a>
+                </div>
+                <span class="text-slate-400 italic">(для зв'язку з автором дослідження)</span>
+              </div>
+            </div>
+          `;
+        });
+      }
+      lucide.createIcons();
+    }
+
+    // === БАЗА 50 НАУКОВИХ ЖУРНАЛІВ (28 UA + 22 INT) ===
+    const JOURNALS_DATA = [
+      // Українські видання (28)
+      { name: "Військова освіта (Military Education)", founder: "НУОУ", scope: "Військова освіта, підготовка військовослужбовців, воєнна наука", url: "https://znp-vo.nuou.org.ua/index", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Військова наука (Military Science)", founder: "ЦНДІ ЗСУ", scope: "Стратегічні дослідження, розвиток ОВТ, кібербезпека", url: "https://themilitaryscience.com/index.php/journal/about", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Збірник наукових праць ЦВСД НУОУ", founder: "НУОУ (Центр воєнно-стратегічних досліджень)", scope: "Воєнно-стратегічні дослідження, національна безпека", url: "https://znp-cvsd.nuou.org.ua/", isUa: true, isFree: true, lang: "Укр / Eng", freq: "3 рази/рік", category: "Фахове «Б»" },
+      { name: "Безпека держави", founder: "Національна академія НГУ", scope: "Державна безпека, охорона держкордону", url: "https://sts.nangu.edu.ua/issue/view/20360", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Збірник наукових праць НАДПСУ", founder: "НАДПСУ", scope: "Безпека кордону, діяльність сил сектору оборони", url: "https://periodica.nadpsu.edu.ua/index.php/military_tech", isUa: true, isFree: false, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Наука і техніка Повітряних Сил ЗСУ", founder: "ХНУПС ім. Івана Кожедуба", scope: "Бойове застосування авіації, ЗРВ, радіотехнічні системи", url: "https://journal-hnups.com.ua/index.php/nitps", isUa: true, isFree: false, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Наука і оборона", founder: "НУОУ", scope: "Воєнна безпека держави, стратегія, планування, НАТО", url: "https://nio.nuou.org.ua/", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Сучасні інформаційні технології у сфері безпеки та оборони", founder: "НУОУ", scope: "АСУВ, ситуаційна обізнаність (Delta), кіберзахист", url: "https://sit.nuou.org.ua/", isUa: true, isFree: true, lang: "Укр / Eng", freq: "3 рази/рік", category: "Фахове «Б»" },
+      { name: "Збірник наукових праць Військової академії (м. Одеса)", founder: "Військова академія (Одеса)", scope: "Озброєння і військова техніка, логістичне забезпечення", url: "https://zbirnyk.vaodessa.org.ua/uk/", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Збірник наукових праць Національної академії НГУ", founder: "НАНГУ", scope: "Технічне забезпечення сил правопорядку", url: "http://znp.nangu.edu.ua", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Науковий вісник Київського інституту НГУ", founder: "КІ НГУ", scope: "Службово-бойова діяльність, управління, безпека", url: "https://kingu-visnyk.kyiv.ua/index.php/journal", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Проблеми правоохоронної та освітньої діяльності", founder: "КІ НГУ", scope: "Військова освіта, підготовка правоохоронців", url: "https://law-education.kyiv.ua/index.php/journal", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Честь і закон", founder: "НАНГУ", scope: "Службово-бойова діяльність, правовий режим воєнного стану", url: "http://chiz.nangu.edu.ua", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Збірник наукових праць ДНДІ ВС ОВТ", founder: "ДНДІ ВС ОВТ", scope: "Випробування та сертифікація озброєння", url: "https://dndivsovt.com/index.php/journal", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Системи обробки інформації", founder: "ХНУПС", scope: "Радіолокація, цифрова обробка сигналів", url: "https://journal-hnups.com.ua/index.php/soi", isUa: true, isFree: false, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Збірник наукових праць ХНУПС", founder: "ХНУПС", scope: "Збройна боротьба: теорія і забезпечення", url: "https://journal-hnups.com.ua/index.php/zhups", isUa: true, isFree: false, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Вісник НТУ «ХПІ». Серія: Динаміка та міцність машин", founder: "НТУ «ХПІ»", scope: "Статистика, прикладна математика", url: "https://jdsm.khpi.edu.ua/", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Безпека інформації", founder: "Національний університет «Київський авіаційний інститут»", scope: "Кібербезпека та захист інформації", url: "https://jrnl.kai.edu.ua/index.php/Infosecurity", isUa: true, isFree: true, lang: "Укр / Eng", freq: "3 рази/рік", category: "Фахове «Б»" },
+      { name: "Соціальний розвиток та безпека", founder: "Громадська організація «Українська наукова спільнота»", scope: "Національна безпека та оборона", url: "https://paperssds.eu/index.php/JSPSDS", isUa: true, isFree: false, lang: "Укр / Eng", freq: "6 разів/рік", category: "Фахове «Б»" },
+      { name: "Системи озброєння і військова техніка", founder: "Харківський національний університет Повітряних Сил імені Івана Кожедуба", scope: "Технічне та всебічне забезпечення збройних сил, управління інформаційною безпекою, кібербезпеки й захисту інформаційних систем оборонного призначення", url: "https://journal-hnups.com.ua/index.php/soivt", isUa: true, isFree: false, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Військово-технічний збірник", founder: "Національна академія сухопутних військ імені гетьмана Петра Сагайдачного", scope: "Озброєння та військова техніка", url: "https://vtz.asv.gov.ua/", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Випробування та сертифікація", founder: "ДНДІ випробувань і сертифікації озброєння та військової техніки", scope: "Озброєння та військова техніка", url: "https://dndivsovt.com/index.php/ts/index", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Озброєння та військова техніка", founder: "ЦНДІ ОВТ ЗСУ", scope: "Національна безпека, озброєння та військова техніка, кібербезпека та захист інформації", url: "https://journal.cndiovt.com.ua/index.php/ovt/uk/about", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Право та безпека", founder: "Харківський національний університет внутрішніх справ", scope: "Правоохоронна діяльність, кібербезпека та захист інформації", url: "https://pb.univd.edu.ua/index.php/PB/about", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Повітряна міць України", founder: "Національний університет оборони України", scope: "Військове управління (за видами збройних сил), озброєння та військова техніка, цивільна безпека", url: "https://sap.nuou.org.ua/", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "PsyUpgrade Journal", founder: "PsyUpgrade", scope: "Військова психологія, психологічна допомога бійцям", url: "https://psyupgrade-journal.com.ua/index.php/journal", isUa: true, isFree: false, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове видання" },
+      { name: "Професійна педагогіка", founder: "ІПО НАПНУ", scope: "Методологія професійного навчання", url: "https://jrnls.ivet.edu.ua/1/uk", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Universities & Leadership", founder: "НАПНУ", scope: "Військове та освітнє лідерство", url: "https://ul-journal.org/index.php/journal", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+
+      // Зарубіжні видання (22)
+      { name: "Parameters", founder: "US Army War College (США)", scope: "Стратегічне керівництво, воєнне мистецтво, підготовка офіцерських кадрів, взаємодія родів військ", url: "https://press.armywarcollege.edu/parameters/", isUa: false, isFree: true, lang: "English", freq: "4 рази/рік", category: "Scopus / Q2" },
+      { name: "The RUSI Journal", founder: "RUSI (Велика Британія)", scope: "Політично-важливі статті з питань сучасної оборони та безпеки, наукові дослідження з військової історії", url: "https://www.tandfonline.com/journals/rusi20/about-this-journal", isUa: false, isFree: false, lang: "English", freq: "6-7 разів/рік", category: "Scopus / WoS" },
+      { name: "Air & Space Operations Review", founder: "US Air Force (США)", scope: "Тактика і стратегія ПС і Космічних сил, ППО, ПРО", url: "https://www.airuniversity.af.edu/ASOR/", isUa: false, isFree: true, lang: "English", freq: "4 рази/рік", category: "DOAJ" },
+      { name: "Armed Forces & Society", founder: "IUS (США)", scope: "Цивільно-військові відносини, військова освіта, лідерство, військова історія", url: "https://journals.sagepub.com/overview-metric/AFS", isUa: false, isFree: false, lang: "English", freq: "4 рази/рік", category: "Scopus / WoS" },
+      { name: "Journal on Baltic Security", founder: "Baltic Defence College (Естонія)", scope: "Регіональна безпека, воєнна стратегія, планування, сумісність із НАТО", url: "https://journalonbalticsecurity.com/journal/JOBS", isUa: false, isFree: true, lang: "English", freq: "2 рази/рік", category: "Scopus" },
+      { name: "Comparative Strategy", founder: "Taylor & Francis (Велика Британія)", scope: "Ракетні системи, стратегія стримування, планування операцій", url: "https://www.tandfonline.com/journals/ucst20", isUa: false, isFree: false, lang: "English", freq: "5-6 разів/рік", category: "Scopus / WoS" },
+      { name: "Defense & Security Analysis", founder: "Taylor & Francis", scope: "Оборонна розвідка, військова економіка, соціально-правові аспекти війни, аналіз операцій", url: "https://www.tandfonline.com/journals/cdan20", isUa: false, isFree: false, lang: "English", freq: "4 рази/рік", category: "Scopus / WoS" },
+      { name: "Defense Technology", founder: "Elsevier", scope: "Оборонні технології, балістика, системи управління вогнем, матеріалознавство для ОВТ", url: "https://www.sciencedirect.com/journal/defence-technology", isUa: false, isFree: false, lang: "English", freq: "12 разів/рік", category: "Scopus Q1" },
+      { name: "Defence Science Journal", founder: "DRDO (Індія)", scope: "Аеронавтика, ракети, лазерні комплекси", url: "https://www.scimagojr.com/journalsearch.php?q=17294&tip=sid&clean=0", isUa: false, isFree: true, lang: "English", freq: "6 разів/рік", category: "Scopus / WoS" },
+      { name: "Defence Studies", founder: "Taylor & Francis", scope: "Концепції майбутньої війни, оборонна трансформація, стратегія та оперативні виклики", url: "https://www.tandfonline.com/journals/fdef20/about-this-journal", isUa: false, isFree: false, lang: "English", freq: "4 рази/рік", category: "Scopus / WoS" },
+      { name: "Journal of Advanced Military Studies", founder: "MCU Press (США)", scope: "Теорія війни, ШІ, міжвидові операції, інновації у військовій справі", url: "https://www.usmcu.edu/Outreach/Publishing/Marine-Corps-University-Press/MCU-Journal/", isUa: false, isFree: true, lang: "English", freq: "2 рази/рік", category: "DOAJ" },
+      { name: "Journal of Military and Strategic Studies", founder: "Univ. of Calgary (Канада)", scope: "Дослідження у галузі стратегічних та військових досліджень", url: "http://jmss.org", isUa: false, isFree: true, lang: "English", freq: "3-4 рази/рік", category: "DOAJ" },
+      { name: "Journal of Military and Information Science", founder: "Туреччина", scope: "Військові IT, C4ISR, захищений зв'язок, ШІ у військах", url: "https://dergipark.org.tr/en/pub/jtmis", isUa: false, isFree: true, lang: "English", freq: "4 рази/рік", category: "Peer-reviewed" },
+      { name: "Journal of Military Studies", founder: "NDU (Фінляндія)", scope: "Оперативне мистецтво та тактика, стратегічні дослідження та дослідження безпеки, лідерство", url: "https://reference-global.com/journal/JMS", isUa: false, isFree: true, lang: "English", freq: "1-2 рази/рік", category: "DOAJ" },
+      { name: "Military Psychology", founder: "Springer / APA", scope: "Психологічна підготовка та стійкість військових, бойовий стрес", url: "https://link.springer.com/journal/40779/volumes-and-issues", isUa: false, isFree: false, lang: "English", freq: "6 разів/рік", category: "Scopus / WoS" },
+      { name: "Obrana a strategie", founder: "Univ. of Defence (Чехія)", scope: "Безпекові та стратегічні дослідження, оборонна та безпекова політика", url: "https://www.obranaastrategie.cz/en/", isUa: false, isFree: true, lang: "Eng / Cze", freq: "2 рази/рік", category: "Scopus" },
+      { name: "Scandinavian Journal of Military Studies", founder: "Данія", scope: "Військова професія, безпека Балтики", url: "https://sjms.nu/", isUa: false, isFree: true, lang: "English", freq: "Open Access", category: "Scopus" },
+      { name: "Security and Defence Quarterly", founder: "ASzWoj (Польща)", scope: "Захист держав та організацій від загроз фізичного, цифрового, соціального та геополітичного характеру", url: "https://securityanddefence.pl/", isUa: false, isFree: true, lang: "English", freq: "4 рази/рік", category: "Scopus" },
+      { name: "The Journal of Slavic Military Studies", founder: "Taylor & Francis", scope: "Аналіз війн у Центральній та Східній Європі", url: "https://www.tandfonline.com/journals/fslv20", isUa: false, isFree: false, lang: "English", freq: "4 рази/рік", category: "Scopus / WoS" },
+      { name: "Journal of Baltic Science Education", founder: "Литва", scope: "Теоретичні, експериментальні та методичні дослідження у галузі освіти та суміжних галузях", url: "https://www.scientiasocialis.lt/jbse/", isUa: false, isFree: false, lang: "English", freq: "6 разів/рік", category: "Scopus Q2" },
+      { name: "Pedagogika", founder: "Литва", scope: "Питання системи освіти, емпіричні дослідження у галузі педагогіки на практиці", url: "https://ejournals.vdu.lt/index.php/Pedagogika/en/about", isUa: false, isFree: false, lang: "English", freq: "4 рази/рік", category: "Scopus Q3" },
+      { name: "Socialinis ugdymas", founder: "Литва", scope: "Соціальна педагогіка, менеджмент, економіка, соціологія, комунікація, філософія та освіта", url: "https://ejournals.vdu.lt/index.php/socialinisugdymas/en", isUa: false, isFree: false, lang: "English", freq: "2 рази/рік" }
+    ];
+
+    const journalsContainer = document.getElementById('journalsContainer');
+    const journalCountEl = document.getElementById('journalCount');
+    const searchInput = document.getElementById('journalSearchInput');
+    let currentFilter = 'all';
+
+    function renderJournalsList() {
+      const query = searchInput.value.toLowerCase().trim();
+      const filtered = JOURNALS_DATA.filter(j => {
+        if (currentFilter === 'ua' && !j.isUa) return false;
+        if (currentFilter === 'int' && j.isUa) return false;
+        if (currentFilter === 'free' && !j.isFree) return false;
+        if (query) return j.name.toLowerCase().includes(query) || j.founder.toLowerCase().includes(query) || j.scope.toLowerCase().includes(query);
+        return true;
+      });
+
+      journalCountEl.innerText = `Показано видань: ${filtered.length} із ${JOURNALS_DATA.length}`;
+      journalsContainer.innerHTML = '';
+
+      if (filtered.length === 0) {
+        journalsContainer.innerHTML = `<div class="col-span-2 text-center py-8 text-slate-400 text-xs">За вашим запитом видань не знайдено.</div>`;
+        return;
+      }
+
+      filtered.forEach(j => {
+        const card = document.createElement('div');
+        card.className = "p-4 bg-slate-900/80 rounded-xl border border-slate-700/60 hover:border-slate-500 transition flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex flex-wrap items-center gap-1.5 mb-1.5">
+              <span class="text-[11px] font-semibold ${j.isUa ? 'text-blue-400' : 'text-cyan-400'}">${j.founder}</span>
+              ${j.category ? `<span class="text-[10px] px-2 py-0.2 rounded ${j.isUa ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'}">${j.category}</span>` : ''}
+              <span class="text-[10px] px-2 py-0.2 rounded ${j.isFree ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}">${j.isFree ? 'Безкоштовно' : 'Платна публікація'}</span>
+            </div>
+            <h4 class="font-bold text-sm text-slate-100 hover:text-blue-300 transition">
+              <a href="${j.url}" target="_blank" rel="noopener noreferrer">${j.name}</a>
+            </h4>
+            <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">${j.scope}</p>
+          </div>
+          <div class="flex items-center justify-between mt-4 pt-2.5 border-t border-slate-800 text-[11px] text-slate-400">
+            <div class="flex items-center gap-3">
+              <span><i data-lucide="globe" class="w-3.5 h-3.5 inline mr-1 opacity-70"></i>${j.lang}</span>
+              ${j.freq ? `<span><i data-lucide="calendar" class="w-3.5 h-3.5 inline mr-1 opacity-70"></i>${j.freq}</span>` : ''}
+            </div>
+            <a href="${j.url}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-blue-400 hover:text-blue-300 font-medium">
+              Перейти <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        `;
+        journalsContainer.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    const btnAll = document.getElementById('filterAll');
+    const btnUa = document.getElementById('filterUa');
+    const btnInt = document.getElementById('filterInt');
+    const btnFree = document.getElementById('filterFree');
+
+    function setFilter(type, activeBtn) {
+      currentFilter = type;
+      [btnAll, btnUa, btnInt, btnFree].forEach(b => b.className = "px-3 py-1 rounded-md text-slate-400 hover:text-white transition cursor-pointer");
+      activeBtn.className = "px-3 py-1 rounded-md bg-blue-600 text-white font-medium transition cursor-pointer";
+      renderJournalsList();
+    }
+
+    btnAll.addEventListener('click', () => setFilter('all', btnAll));
+    btnUa.addEventListener('click', () => setFilter('ua', btnUa));
+    btnInt.addEventListener('click', () => setFilter('int', btnInt));
+    btnFree.addEventListener('click', () => setFilter('free', btnFree));
+    searchInput.addEventListener('input', renderJournalsList);
+
+    // Ініціалізація
+    renderSurveys();
+    renderJournalsList();
+
+    // 4. ДИНАМІЧНИЙ РУХОМИЙ РЯДОК НОВИН
+    const tickerContent = document.getElementById('tickerContent');
+    const fallbackNews = [
+      { title: "Освітні інновації та підготовка військових фахівців: інтеграція бойового досвіду в навчальний процес", source: "НУОУ", link: "https://nuou.org.ua/" },
+      { title: "Трансформація системи військової освіти: розвиток спроможностей офіцерського корпусу ЗСУ", source: "Міноборони", link: "https://mod.gov.ua/news" },
+      { title: "Оперативна обстановка на лінії зіткнення та злагодження резервів", source: "Генштаб ЗСУ", link: "https://www.facebook.com/GeneralStaff.ua/?locale=ua" },
+      { title: "Розвиток інженерного забезпечення та розмінування: досвід Сил підтримки", source: "Сили підтримки ЗСУ", link: "https://militaryland.net/ua/ukraine/support-forces/support-forces-command/" },
+      { title: "Оптимізація логістичних ланцюгів постачання в умовах сучасного вогневого впливу", source: "Сили логістики ЗСУ", link: "https://logistics.zsu.gov.ua/" }
+    ];
+
+    async function loadTickerNews() {
+      try {
+        const rssFeedUrl = encodeURIComponent("https://armyinform.com.ua/feed/");
+        const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssFeedUrl}`);
+        const data = await res.json();
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
+          const liveItems = data.items.slice(0, 6).map(item => ({ title: item.title, source: "АрміяInform", link: item.link }));
+          renderTicker([...liveItems, ...fallbackNews]);
+        } else {
+          renderTicker(fallbackNews);
+        }
+      } catch (err) {
+        renderTicker(fallbackNews);
+      }
+    }
+
+    function renderTicker(newsList) {
+      const loopList = [...newsList, ...newsList];
+      tickerContent.innerHTML = loopList.map(item => `
+        <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 hover:text-emerald-300 transition shrink-0 group">
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-emerald-400 font-semibold border border-slate-700 text-[10px] group-hover:border-emerald-500/50">${item.source}</span>
+          <span class="underline-offset-4 group-hover:underline">${item.title}</span>
+          <span class="text-slate-600 font-bold ml-4">✦</span>
+        </a>
+      `).join('');
+    }
+    loadTickerNews();
+
+    // 5. ФОРМА СУПРОВОДУ ВІЙСЬКОВИХ АВТОРІВ
+    const triggerMilitary = document.getElementById('triggerMilitaryAssistance');
+    triggerMilitary.addEventListener('click', () => {
+      document.getElementById('submit').scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('manuscriptTitle').focus();
+    });
+
+    const form = document.getElementById('submissionForm');
+    const successBox = document.getElementById('successBox');
+    const errorBox = document.getElementById('errorBox');
+    const resetBtn = document.getElementById('resetBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+
+    const ACCESS_KEY = "ВСТАВ_СЮДИ_ТВІЙ_ACCESS_KEY"; 
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      btnText.innerText = "Надсилання до редакції...";
+      errorBox.classList.add('hidden');
+
+      const formData = new FormData(form);
+      formData.append("access_key", ACCESS_KEY);
+
+      try {
+        const response = await fetch("https://api.web3forms.com/submit", { method: "POST", body: formData });
+        const data = await response.json();
+        if (data.success) {
+          form.classList.add('hidden');
+          successBox.classList.remove('hidden');
+          lucide.createIcons();
+        } else {
+          errorBox.innerText = data.message || "Не вдалося надіслати. Перевірте ключ доступу.";
+          errorBox.classList.remove('hidden');
+        }
+      } catch (error) {
+        errorBox.innerText = "Помилка зв'язку. Перевірте з'єднання з інтернетом.";
+        errorBox.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        btnText.innerText = "Надіслати завершено";
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      form.reset();
+      successBox.classList.add('hidden');
+      form.classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>
