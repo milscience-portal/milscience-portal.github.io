@@ -33,7 +33,6 @@
       mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 75%);
     }
 
-    /* Активація додаткової накладки на ПК та телефоні */
     .subpanel-active {
       opacity: 1 !important;
       visibility: visible !important;
@@ -76,25 +75,24 @@
     <div class="font-bold text-[10px] text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-1 mb-1 text-center">Статистика</div>
     <div class="flex items-center gap-2.5">
       <i data-lucide="eye" class="w-4 h-4 text-blue-400"></i>
-      <span>Перегляди: <strong id="siteViews" class="text-white">1</strong></span>
+      <span>Перегляди: <strong id="siteViews" class="text-white">1252</strong></span>
     </div>
     <div class="flex items-center gap-2.5">
       <div class="relative w-4 h-4 flex items-center justify-center">
         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
         <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
       </div>
-      <span>Онлайн: <strong id="siteOnline" class="text-white">1</strong></span>
+      <span>Онлайн: <strong id="siteOnline" class="text-white">3</strong></span>
     </div>
   </div>
 
   <!-- ============================================================ -->
-  <!-- ВИСУВНА БІЧНА ПАНЕЛЬ (DRAWER) З КАЛЬКАДНОЮ НАКЛАДКОЮ НА ПК -->
+  <!-- ВИСУВНА БІЧНА ПАНЕЛЬ (DRAWER) З КАСКАДНОЮ НАКЛАДКОЮ НА ПК -->
   <!-- ============================================================ -->
   <div id="drawerOverlay" class="fixed inset-0 bg-slate-950/60 z-50 hidden transition-opacity duration-300"></div>
 
   <aside id="sideDrawer" class="fixed top-0 left-0 h-full w-80 sm:w-96 bg-slate-900 text-white z-50 shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between border-r border-slate-800 overflow-visible">
     
-    <!-- Внутрішній блок вмісту панелі -->
     <div class="p-5 sm:p-6 overflow-y-auto sm:overflow-visible max-h-[calc(100vh-65px)] sm:max-h-none archive-scroll">
       <div class="flex items-center justify-between pb-4 border-b border-slate-800">
         <div class="flex items-center space-x-3">
@@ -111,7 +109,7 @@
         </button>
       </div>
 
-      <!-- РОЗДІЛ 1: Офіційні сайти з накладкою праворуч для ПК -->
+      <!-- РОЗДІЛ 1: Офіційні сайти -->
       <div id="subpanelContainer" class="mt-4 relative">
         <div id="subpanelTrigger" class="flex items-center justify-between p-3 bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 rounded-xl cursor-pointer transition shadow-md group select-none">
           <div class="flex items-center gap-3">
@@ -129,11 +127,8 @@
           </div>
         </div>
 
-        <!-- НАКЛАДКА НА ПК (праворуч від панелі) / ВБУДОВАНИЙ СПИСОК НА ТЕЛЕФОНІ -->
         <div id="subpanelFlyout" class="absolute left-0 right-0 top-full mt-2 sm:mt-0 sm:left-full sm:top-0 sm:ml-3 sm:w-80 bg-slate-900 border border-slate-700 rounded-2xl p-4 shadow-2xl opacity-0 invisible sm:transform sm:-translate-x-2 transition-all duration-300 z-[100] pointer-events-none">
-          <!-- Безшовний місток для мишки на комп'ютері -->
           <div class="hidden sm:block absolute -left-4 top-0 w-4 h-full"></div>
-
           <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-800">
             <span class="text-xs font-bold text-white flex items-center gap-1.5">
               <i data-lucide="shield" class="w-3.5 h-3.5 text-emerald-400"></i> Перелік ресурсів
@@ -150,7 +145,6 @@
           <i data-lucide="bookmark-check" class="w-4 h-4"></i> Методична допомога автору
         </div>
         
-        <!-- Кейс 1: APA 7th -->
         <div class="p-3.5 bg-slate-800/80 rounded-xl border border-slate-700/80 shadow-md">
           <div class="flex items-start gap-2.5">
             <div class="p-1.5 bg-amber-500/20 text-amber-300 rounded-lg shrink-0 mt-0.5">
@@ -167,7 +161,6 @@
           </a>
         </div>
 
-        <!-- Кейс 2: ДСТУ 8302:2015 -->
         <div class="p-3.5 bg-slate-800/80 rounded-xl border border-slate-700/80 shadow-md mt-2.5">
           <div class="flex items-start gap-2.5">
             <div class="p-1.5 bg-amber-500/20 text-amber-300 rounded-lg shrink-0 mt-0.5">
@@ -184,7 +177,6 @@
           </a>
         </div>
 
-        <!-- Кейс 3: IMRAD -->
         <div class="p-3.5 bg-slate-800/80 rounded-xl border border-slate-700/80 shadow-md mt-2.5">
           <div class="flex items-start gap-2.5">
             <div class="p-1.5 bg-red-500/20 text-red-400 rounded-lg shrink-0 mt-0.5">
@@ -197,7 +189,7 @@
               <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Міжнародний стандарт підготовки рукопису: зміст розділів, вимоги до викладу матеріалу та практичні рекомендації.</p>
             </div>
           </div>
-          <a href="https://spubl.com.ua/uk/blog/the-imrad-structure-of-a-scientific-article-sections-and-recommendations" target="_blank" rel="noopener noreferrer" class="mt-3 w-full inline-flex items-center justify-center gap-1.5 bg-red-600 hover:bg-red-500 text-white font-medium py-2 px-3 rounded-lg text-xs transition shadow-sm">
+          <a href="https://spubl.com.ua/uk/blog/the-imrad-structure-of-a-scientific-article-sections-and-recommendations" target="_blank" rel="noopener noreferrer" class="mt-3.5 w-full inline-flex items-center justify-center gap-1.5 bg-red-600 hover:bg-red-500 text-white font-medium py-2 px-3 rounded-lg text-xs transition shadow-sm">
             <span>Відкрити структуру <span class="font-bold underline ml-0.5">IMRAD</span></span>
             <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
           </a>
@@ -205,7 +197,6 @@
       </div>
     </div>
 
-    <!-- Фіксований нижній рядок панелі -->
     <div class="p-4 border-t border-slate-800 bg-slate-950/60 text-[11px] text-slate-400 flex items-center justify-between shrink-0">
       <span>Редакція: vo@edu.nuou.org.ua</span>
       <span class="text-emerald-400 font-semibold">НУОУ</span>
@@ -370,7 +361,6 @@
       <!-- ПРАВА ЧАСТИНА: АЛГОРИТМ + АРХІВ -->
       <div class="flex flex-col gap-6 h-full">
         
-        <!-- Алгоритм подачі -->
         <div class="bg-blue-950 text-white rounded-2xl p-6 sm:p-8 shadow-sm flex-shrink-0 relative overflow-hidden">
           <div class="absolute -right-4 -top-4 opacity-10">
             <i data-lucide="info" class="w-32 h-32"></i>
@@ -396,7 +386,6 @@
           </ol>
         </div>
 
-        <!-- Архів опитувань -->
         <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm flex-grow flex flex-col">
           <h3 class="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2 uppercase tracking-wide">
             <i data-lucide="archive" class="w-4 h-4 text-slate-400"></i> Архів опитувань
@@ -741,23 +730,24 @@
   </footer>
 
   <!-- ============================================================ -->
-  <!-- СЦЕНАРІЇ JAVASCRIPT: ПАНЕЛІ, ДАШБОРД ТА СТАТИСТИКА -->
+  <!-- СЦЕНАРІЇ JAVASCRIPT: СТАБІЛЬНИЙ ВІДЖЕТ, ПАНЕЛІ ТА ДАШБОРД -->
   <!-- ============================================================ -->
   <script>
     lucide.createIcons();
 
-    // === ПЛАВАЮЧИЙ ВІДЖЕТ АКТИВНОСТІ ===
-    let views = localStorage.getItem('vo_site_views');
-    if (!views) {
-      views = 1240; 
-    }
-    views = parseInt(views) + 1;
-    localStorage.setItem('vo_site_views', views);
-    document.getElementById('siteViews').innerText = views;
-    
-    const onlineCounter = Math.floor(Math.random() * (15 - 3 + 1)) + 3;
-    document.getElementById('siteOnline').innerText = onlineCounter;
+    // === СТАБІЛЬНИЙ ВІДЖЕТ СТАТИСТИКИ (БЕЗ СТРИБАННЯ ЦИФР) ===
+    let views = parseInt(localStorage.getItem('vo_site_views')) || 1252;
 
+    // Збільшуємо перегляд лише один раз за сесію відвідувача
+    if (!sessionStorage.getItem('vo_session_counted')) {
+      views += 1;
+      localStorage.setItem('vo_site_views', views);
+      sessionStorage.setItem('vo_session_counted', 'true');
+    }
+    document.getElementById('siteViews').innerText = views;
+
+    // Стабільний показник онлайн без випадкових коливань
+    document.getElementById('siteOnline').innerText = 3;
 
     // === ВИСУВНА ПАНЕЛЬ ТА НАДІЙНЕ КЕРУВАННЯ ПІДПАНЕЛЛЮ ===
     const openDrawerBtn = document.getElementById('openDrawerBtn');
@@ -801,13 +791,11 @@
     }
     function toggleSubpanel() { isSubpanelOpen ? closeSubpanel() : openSubpanel(); }
 
-    // Відкриття по кліку (надійно для телефонів і ПК)
     subpanelTrigger.addEventListener('click', (e) => { 
       e.stopPropagation(); 
       toggleSubpanel(); 
     });
 
-    // Наведення миші для комп'ютерів (ПК):
     subpanelContainer.addEventListener('mouseenter', () => { 
       if (window.innerWidth >= 640) openSubpanel(); 
     });
@@ -815,7 +803,6 @@
       if (window.innerWidth >= 640) closeSubpanel(); 
     });
     subpanelFlyout.addEventListener('click', (e) => { e.stopPropagation(); });
-
 
     // === ОФІЦІЙНІ ДЖЕРЕЛА (13 САЙТІВ) ===
     const OFFICIAL_SOURCES = [
@@ -927,7 +914,6 @@
 
     // === БАЗА 50 НАУКОВИХ ЖУРНАЛІВ (28 UA + 22 INT) ===
     const JOURNALS_DATA = [
-      // Українські видання (28)
       { name: "Військова освіта (Military Education)", founder: "НУОУ", scope: "Військова освіта, підготовка військовослужбовців, воєнна наука", url: "https://znp-vo.nuou.org.ua/index", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
       { name: "Військова наука (Military Science)", founder: "ЦНДІ ЗСУ", scope: "Стратегічні дослідження, розвиток ОВТ, кібербезпека", url: "https://themilitaryscience.com/index.php/journal/about", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
       { name: "Збірник наукових праць ЦВСД НУОУ", founder: "НУОУ (Центр воєнно-стратегічних досліджень)", scope: "Воєнно-стратегічні дослідження, національна безпека", url: "https://znp-cvsd.nuou.org.ua/", isUa: true, isFree: true, lang: "Укр / Eng", freq: "3 рази/рік", category: "Фахове «Б»" },
@@ -957,7 +943,6 @@
       { name: "Професійна педагогіка", founder: "ІПО НАПНУ", scope: "Методологія професійного навчання", url: "https://jrnls.ivet.edu.ua/1/uk", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
       { name: "Universities & Leadership", founder: "НАПНУ", scope: "Військове та освітнє лідерство", url: "https://ul-journal.org/index.php/journal", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
 
-      // Зарубіжні видання (22)
       { name: "Parameters", founder: "US Army War College (США)", scope: "Стратегічне керівництво, воєнне мистецтво, підготовка офіцерських кадрів, взаємодія родів військ", url: "https://press.armywarcollege.edu/parameters/", isUa: false, isFree: true, lang: "English", freq: "4 рази/рік", category: "Scopus / Q2" },
       { name: "The RUSI Journal", founder: "RUSI (Велика Британія)", scope: "Політично-важливі статті з питань сучасної оборони та безпеки, наукові дослідження з військової історії", url: "https://www.tandfonline.com/journals/rusi20/about-this-journal", isUa: false, isFree: false, lang: "English", freq: "6-7 разів/рік", category: "Scopus / WoS" },
       { name: "Air & Space Operations Review", founder: "US Air Force (США)", scope: "Тактика і стратегія ПС і Космічних сил, ППО, ПРО", url: "https://www.airuniversity.af.edu/ASOR/", isUa: false, isFree: true, lang: "English", freq: "4 рази/рік", category: "DOAJ" },
@@ -966,7 +951,7 @@
       { name: "Comparative Strategy", founder: "Taylor & Francis (Велика Британія)", scope: "Ракетні системи, стратегія стримування, планування операцій", url: "https://www.tandfonline.com/journals/ucst20", isUa: false, isFree: false, lang: "English", freq: "5-6 разів/рік", category: "Scopus / WoS" },
       { name: "Defense & Security Analysis", founder: "Taylor & Francis", scope: "Оборонна розвідка, військова економіка, соціально-правові аспекти війни, аналіз операцій", url: "https://www.tandfonline.com/journals/cdan20", isUa: false, isFree: false, lang: "English", freq: "4 рази/рік", category: "Scopus / WoS" },
       { name: "Defense Technology", founder: "Elsevier", scope: "Оборонні технології, балістика, системи управління вогнем, матеріалознавство для ОВТ", url: "https://www.sciencedirect.com/journal/defence-technology", isUa: false, isFree: false, lang: "English", freq: "12 разів/рік", category: "Scopus Q1" },
-      { name: "Defence Science Journal", founder: "DRDO (Індія)", scope: "Аеронавтика, ракети, лазерні комплекси", url: "https://www.scimagojr.com/journalsearch.php?q=17294&tip=sid&clean=0", isUa: false, isFree: true, lang: "English", freq: "6 разів/рік", category: "Scopus / WoS" },
+      { name: "Defence Science Journal", founder: "DRDO (Індія)", scope: "Аеронавтика, ракети, лазерні комплекси", url: "https://www.scimagojr.com/journalsearch.php?q=17294&tip=sid&clean=0", isUa: false, isFree: true, lang: "English", freq: "6 рази/рік", category: "Scopus / WoS" },
       { name: "Defence Studies", founder: "Taylor & Francis", scope: "Концепції майбутньої війни, оборонна трансформація, стратегія та оперативні виклики", url: "https://www.tandfonline.com/journals/fdef20/about-this-journal", isUa: false, isFree: false, lang: "English", freq: "4 рази/рік", category: "Scopus / WoS" },
       { name: "Journal of Advanced Military Studies", founder: "MCU Press (США)", scope: "Теорія війни, ШІ, міжвидові операції, інновації у військовій справі", url: "https://www.usmcu.edu/Outreach/Publishing/Marine-Corps-University-Press/MCU-Journal/", isUa: false, isFree: true, lang: "English", freq: "2 рази/рік", category: "DOAJ" },
       { name: "Journal of Military and Strategic Studies", founder: "Univ. of Calgary (Канада)", scope: "Дослідження у галузі стратегічних та військових досліджень", url: "http://jmss.org", isUa: false, isFree: true, lang: "English", freq: "3-4 рази/рік", category: "DOAJ" },
@@ -1053,7 +1038,6 @@
     btnFree.addEventListener('click', () => setFilter('free', btnFree));
     searchInput.addEventListener('input', renderJournalsList);
 
-    // Ініціалізація
     renderSurveys();
     renderJournalsList();
 
@@ -1146,9 +1130,11 @@
       form.classList.remove('hidden');
     });
   </script>
-  
+
+  <!-- ============================================================ -->
   <!-- ОФІЦІЙНИЙ ЛІЧИЛЬНИК CLICKY WEB ANALYTICS -->
+  <!-- ============================================================ -->
   <script async data-id="101512776" src="//static.getclicky.com/js"></script>
-  
+
 </body>
 </html>
