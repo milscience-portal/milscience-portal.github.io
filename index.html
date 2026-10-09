@@ -9,10 +9,10 @@
   <title>Збірник наукових праць «Військова освіта» НУОУ — Портал молодих науковців</title>
   <meta name="google-site-verification" content="HsmRzoHVcaz741ViYjcj-WQPoE5h7YkDTEtBge2L68Y" />
   <!-- Опис, який люди бачитимуть під посиланням у Google -->
-  <meta name="description" content="Офіційний вебресурс та платформа підтримки молодих дослідників і діючих військовослужбовців збірника наукових праць «Військова освіта» Національного університету оборони України (Категорія «Б»).">
+  <meta name="description" content="Офіційний вебресурс та платформа підтримки молодих дослідників і діючих військовослужбовців збірника наукових праць «Військова освіта»">
   
   <!-- Ключові слова для пошукової системи -->
-  <meta name="keywords" content="Військова освіта, збірник наукових праць військова освіта, НУОУ, воєнна наука, молоді науковці, категорія Б, реєстр військових журналів, бойовий досвід, опитування">
+  <meta name="keywords" content="Військова освіта, збірник наукових праць, НУОУ, воєнна наука, молоді науковці, категорія Б, реєстр військових журналів, бойовий досвід, опитування">
   
   <!-- Вказівка пошуковику індексувати сайт та йти за посиланнями -->
   <meta name="robots" content="index, follow">
@@ -22,7 +22,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://milscience-portal.github.io/">
   <meta property="og:title" content="Збірник наукових праць «Військова освіта» НУОУ">
-  <meta property="og:description" content="Портал підтримки науковців та військовослужбовців. Реєстр періодики сектору оборони, методична допомога автору та дослідження.">
+  <meta property="og:description" content="Портал підтримки науковців та військовослужбовців. Реєстр періодики сектору оборони, методична допомога автору дослідження.">
   
   <!-- Підключення бібліотеки стилів Tailwind CSS через CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -540,7 +540,7 @@
 
           <div class="flex flex-wrap gap-1.5 bg-slate-900 p-1.5 rounded-lg border border-slate-700 text-xs">
             <button type="button" id="filterAll" class="px-3 py-1 rounded-md bg-blue-600 text-white font-medium transition cursor-pointer">Всі</button>
-            <button type="button" id="filterUa" class="px-3 py-1 rounded-md text-slate-400 hover:text-white transition cursor-pointer">Україна (28)</button>
+            <button type="button" id="filterUa" class="px-3 py-1 rounded-md text-slate-400 hover:text-white transition cursor-pointer">Україна (40)</button>
             <button type="button" id="filterInt" class="px-3 py-1 rounded-md text-slate-400 hover:text-white transition cursor-pointer">Зарубіжні (22)</button>
             <button type="button" id="filterFree" class="px-3 py-1 rounded-md text-slate-400 hover:text-emerald-400 transition cursor-pointer">Безкоштовні</button>
           </div>
@@ -931,7 +931,7 @@
       lucide.createIcons();
     }
 
-    // === БАЗА 50 НАУКОВИХ ЖУРНАЛІВ (28 UA + 22 INT) ===
+    // === БАЗА 62 НАУКОВИХ ЖУРНАЛІВ (40 UA + 22 INT) ===
     const JOURNALS_DATA = [
       { name: "Військова освіта (Military Education)", founder: "НУОУ", scope: "Військова освіта, підготовка військовослужбовців, воєнна наука", url: "https://znp-vo.nuou.org.ua/index", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
       { name: "Військова наука (Military Science)", founder: "ЦНДІ ЗСУ", scope: "Стратегічні дослідження, розвиток ОВТ, кібербезпека", url: "https://themilitaryscience.com/index.php/journal/about", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
@@ -959,8 +959,21 @@
       { name: "Право та безпека", founder: "Харківський національний університет внутрішніх справ", scope: "Правоохоронна діяльність, кібербезпека та захист інформації", url: "https://pb.univd.edu.ua/index.php/PB/about", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
       { name: "Повітряна міць України", founder: "Національний університет оборони України", scope: "Військове управління (за видами збройних сил), озброєння та військова техніка, цивільна безпека", url: "https://sap.nuou.org.ua/", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
       { name: "PsyUpgrade Journal", founder: "PsyUpgrade", scope: "Військова психологія, психологічна допомога бійцям", url: "https://psyupgrade-journal.com.ua/index.php/journal", isUa: true, isFree: false, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове видання" },
-      { name: "Професійна педагогіка", founder: "ІПО НАПНУ", scope: "Методологія професійного навчання", url: "https://jrnls.ivet.edu.ua/1/uk", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Професійна педагогіка", founder: "ІПО НАПНУ", scope: "Методологія професійного навчання", url: "https://jrnls.ivet.edu.ua/1/uk", isUa: true, isFree: false, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
       { name: "Universities & Leadership", founder: "НАПНУ", scope: "Військове та освітнє лідерство", url: "https://ul-journal.org/index.php/journal", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Society and Security", founder: "Державний університет «Житомирська політехніка»", scope: "Національна безпека; інформаційна безпека; правовове забезпечення", url: "https://sas.ztu.edu.ua/", isUa: true, isFree: false, lang: "Укр / Eng", freq: "6 разів/рік", category: "Фахове «Б»" },
+      { name: "Системи обробки інформації", founder: "ХНУ ПС ім. Івана Кожедуба", scope: "Наукові дослідження у галузі інформаційних технологій та електроніки", url: "https://www.journal-hnups.com.ua/index.php/soi", isUa: true, isFree: false, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Наукоємні технології", founder: "Національний університет «Київський авіаційний інститут»", scope: "Інформаційні технології, кібербезпека; Екологія, хімічна технологія, біотехнології та біоінженерія; Електроніка, телекомунікації та радіотехніка; Транспорт, транспортні технології", url: "https://jrnl.kai.edu.ua/index.php/SBT", isUa: true, isFree: false, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Морська безпека та оборона", founder: "Інститут Військово-морських сил НУ «Одеська морська академія»", scope: "Морська безпека, навчання та перепідготовки працівників морської безпеки, дяльність військових формувань держав у сфері морської безпеки", url: "https://msd.oduvs.od.ua/index.php/msd", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Збірник наукових праць ВІКНУ", founder: "Військовий інститут КНУ", scope: "Національна безпека; безпека державного кордону; управління інформаційною безпекою; військове управління (за видами збройних сил); забезпечення військ (сил); озброєння та військова техніка; кібербезпека та захист інформації", url: "https://digest.mil.knu.ua/uk", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Проблеми створення, випробування, застосування та експлуатації складних інформаційних систем", founder: "Житомирський військовий інститут імені С. П. Корольова", scope: "Проєктування, моделювання, інтеграція та розвиток складних інформаційних систем; експлуатації, супроводу, модернізація та підвищення надійності й живучості інформаційних систем", url: "https://znp.zvir.zt.ua/about", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Кібербезпека: освіта, наука, техніка", founder: "Київський столичний університет імені Бориса Грінченка", scope: "озроблення, упровадження, оцінювання та експлуатація технологій, що підвищують безпеку, надійність, стійкість і відмовостійкість інформаційних, комунікаційних, комп’ютерних та кіберфізичних систем", url: "https://csecurity.kubg.edu.ua/index.php/journal", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Електроніка та інформаційні технології", founder: "Львівський національний університет імені Івана Франка", scope: "Фундаментальні та нові процеси в електроніці та інформаційних технологіях", url: "https://publications.lnu.edu.ua/collections/index.php/electronics", isUa: true, isFree: true, lang: "English", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Інформаційні технології та комп’ютерна інженерія", founder: "Вінницький національний технічний університет", scope: "Програмне забезпечення, комп'ютерні науки, кібербезпека, системний аналіз та захист інформації, інформаційні системи та технології", url: "https://itce.vn.ua/uk", isUa: true, isFree: true, lang: "English", freq: "3 рази/рік", category: "Фахове «Б»" },
+      { name: "Прикладні інформаційні системи та технології в цифровому суспільстві", founder: "Київський національний університет імені Тараса Шевченка", scope: "Прикладні інформаційні системи та технології в цифровій економіці, транспорті, машинобудуванні, сільському господарстві, фінансах, банківській справі, енергетиці, медицині, освіті, науці, техніці, в інформаційно-комунікаційних мережах", url: "https://aistds.knu.ua/uk/about-the-journal", isUa: true, isFree: true, lang: "Укр / Eng", freq: "1 раз/рік", category: "Фахове «Б»" },
+      { name: "Адаптивні системи автоматичного управління", founder: "Національний технічний університет України «Київський політехнічний інститут імені Ігоря Сікорського»", scope: "Комп'ютеризовані та робото-технічні системи; інтегровані системи; оптимізація  систем і процесів; інтелектуальні технології; інформаційна безпека і захист інформації", url: "https://asac.kpi.ua/", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
+      { name: "Системи і технології зв’язку, інформатизації та кібербезпек", founder: "ВІТІ імені Героїв Крут", scope: "Інформаційно-комунікаційні системи, електронні комунікаційні мережи, комплекси та засоби зв’язку, пристрої та компоненти; захист інформації та кібербезпека; застосування військових частин (підрозділів) зв’язку збройних сил", url: "https://journal.viti.edu.ua/index.php/cicst", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Information Technologies and Learning Tools", founder: "Інститут цифровізації освіти НАПН України", scope: "Наукові та практичні питання  побудови та використання комп’ютерно-орієнтованого освітнього середовища; ІКТ для освітніх, наукових та управлінських цілей; новітні засоби ІКТ для освітньої діяльності", url: "https://journal.iitta.gov.ua/index.php/itlt/focus", isUa: true, isFree: true, lang: "Укр / Eng", freq: "6 разів/рік", category: "Web of Science" },
 
       { name: "Parameters", founder: "US Army War College (США)", scope: "Стратегічне керівництво, воєнне мистецтво, підготовка офіцерських кадрів, взаємодія родів військ", url: "https://press.armywarcollege.edu/parameters/", isUa: false, isFree: true, lang: "English", freq: "4 рази/рік", category: "Scopus / Q2" },
       { name: "The RUSI Journal", founder: "RUSI (Велика Британія)", scope: "Політично-важливі статті з питань сучасної оборони та безпеки, наукові дослідження з військової історії", url: "https://www.tandfonline.com/journals/rusi20/about-this-journal", isUa: false, isFree: false, lang: "English", freq: "6-7 разів/рік", category: "Scopus / WoS" },
