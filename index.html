@@ -12,7 +12,7 @@
   <meta name="description" content="Офіційний вебресурс та платформа підтримки молодих дослідників і діючих військовослужбовців збірника наукових праць «Військова освіта»">
   
   <!-- Ключові слова для пошукової системи -->
-  <meta name="keywords" content="Військова освіта, збірник наукових праць, НУОУ, воєнна наука, молоді науковці, категорія Б, реєстр військових журналів, бойовий досвід, опитування">
+  <meta name="keywords" content="Військова освіта, збірник наукових праць, НУОУ, воєнна наука, молоді науковці, категорія Б, реєстр військових журналів, бойовий досвід, опитування, military education, Science in Ukraine">
   
   <!-- Вказівка пошуковику індексувати сайт та йти за посиланнями -->
   <meta name="robots" content="index, follow">
@@ -106,13 +106,14 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- ВИСУВНА БІЧНА ПАНЕЛЬ (DRAWER) З КАСКАДНОЮ НАКЛАДКОЮ НА ПК -->
+  <!-- ВИСУВНА БІЧНА ПАНЕЛЬ (DRAWER) З ФІКСОВАНОЮ ШАПКОЮ ТА СКРОЛОМ У РОЗДІЛАХ -->
   <!-- ============================================================ -->
   <div id="drawerOverlay" class="fixed inset-0 bg-slate-950/60 z-50 hidden transition-opacity duration-300"></div>
 
   <aside id="sideDrawer" class="fixed top-0 left-0 h-full w-80 sm:w-96 bg-slate-900 text-white z-50 shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between border-r border-slate-800 overflow-visible">
     
-    <div class="p-5 sm:p-6 overflow-y-auto sm:overflow-visible max-h-[calc(100vh-65px)] sm:max-h-none archive-scroll">
+    <!-- ФІКСОВАНА ШАПКА З КНОПКОЮ ЗАКРИТТЯ (НЕ ЗНИКАЄ ПРИ СКРОЛІ) -->
+    <div class="p-5 sm:p-6 overflow-y-auto flex-1 archive-scroll pr-3">
       <div class="flex items-center justify-between pb-4 border-b border-slate-800">
         <div class="flex items-center space-x-3">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-slate-900 border border-emerald-500/40 shrink-0 flex items-center justify-center shadow-lg">
@@ -128,7 +129,7 @@
         </button>
       </div>
 
-      <!-- РОЗДІЛ 1: Офіційні сайти -->
+      <!-- РОЗДІЛ 1: Офіційні сайти (зі скролом усередині випадаючого списку) -->
       <div id="subpanelContainer" class="mt-4 relative">
         <div id="subpanelTrigger" class="flex items-center justify-between p-3 bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 rounded-xl cursor-pointer transition shadow-md group select-none">
           <div class="flex items-center gap-3">
@@ -158,12 +159,17 @@
         </div>
       </div>
 
-      <!-- РОЗДІЛ 2: МЕТОДИЧНА ДОПОМОГА АВТОРУ -->
-      <div class="mt-4 pt-3 border-t border-slate-800">
-        <div class="flex items-center gap-2 mb-2 text-xs font-bold text-amber-400 uppercase tracking-wider">
+      <!-- РОЗДІЛ 2: МЕТОДИЧНА ДОПОМОГА АВТОРУ (З ВЛАСНИМ СКРОЛОМ) -->
+      <div class="mt-4 pt-3 border-t border-slate-800 flex flex-col flex-1 min-h-0">
+        <div class="flex items-center gap-2 mb-2 text-xs font-bold text-amber-400 uppercase tracking-wider shrink-0">
           <i data-lucide="bookmark-check" class="w-4 h-4"></i> Методична допомога автору
         </div>
 
+        <!-- Блок зі скролом -->
+        <div class="overflow-y-auto pr-2 space-y-2.5 archive-scroll flex-1 max-h-[380px]">
+       </div>  
+
+       <!-- Рекомендації ЄАНР --> 
         <div class="p-3.5 bg-slate-800/80 rounded-xl border border-slate-700/80 shadow-md mt-2.5">
           <div class="flex items-start gap-2.5">
             <div class="p-1.5 bg-amber-500/20 text-amber-300 rounded-lg shrink-0 mt-0.5">
@@ -182,6 +188,7 @@
           </a>
         </div> 
         
+        <!-- Оформлення списку джерел APA 7th -->
         <div class="p-3.5 bg-slate-800/80 rounded-xl border border-slate-700/80 shadow-md">
           <div class="flex items-start gap-2.5">
             <div class="p-1.5 bg-amber-500/20 text-amber-300 rounded-lg shrink-0 mt-0.5">
@@ -198,6 +205,7 @@
           </a>
         </div>
 
+       <!-- ДСТУ 8302:2015 --> 
         <div class="p-3.5 bg-slate-800/80 rounded-xl border border-slate-700/80 shadow-md mt-2.5">
           <div class="flex items-start gap-2.5">
             <div class="p-1.5 bg-amber-500/20 text-amber-300 rounded-lg shrink-0 mt-0.5">
@@ -214,6 +222,7 @@
           </a>
         </div>
 
+        <!-- Структура наукової статті IMRAD -->
         <div class="p-3.5 bg-slate-800/80 rounded-xl border border-slate-700/80 shadow-md mt-2.5">
           <div class="flex items-start gap-2.5">
             <div class="p-1.5 bg-red-500/20 text-red-400 rounded-lg shrink-0 mt-0.5">
@@ -234,6 +243,7 @@
       </div>
     </div>
 
+    <!-- ФІКСОВАНИЙ ПІДВАЛ ПАНЕЛІ (КОНТАКТИ РЕДАКЦІЇ) -->
     <div class="p-4 border-t border-slate-800 bg-slate-950/60 text-[11px] text-slate-400 flex items-center justify-between shrink-0">
       <span>Редакція: vo@edu.nuou.org.ua</span>
       <span class="text-emerald-400 font-semibold">НУОУ</span>
