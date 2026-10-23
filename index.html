@@ -113,24 +113,24 @@
   <aside id="sideDrawer" class="fixed top-0 left-0 h-full w-80 sm:w-96 bg-slate-900 text-white z-50 shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between border-r border-slate-800 overflow-visible">
     
     <!-- ФІКСОВАНА ШАПКА З КНОПКОЮ ЗАКРИТТЯ (НЕ ЗНИКАЄ ПРИ СКРОЛІ) -->
-    <div class="p-5 sm:p-6 overflow-y-auto flex-1 archive-scroll pr-3">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
-        <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-slate-900 border border-emerald-500/40 shrink-0 flex items-center justify-center shadow-lg">
-            <i data-lucide="hard-hat" class="w-5 h-5 text-emerald-300"></i>
-          </div>
-          <div>
-            <h3 class="font-bold text-sm text-white leading-tight">Панель навігації</h3>
-            <span class="text-[11px] text-slate-400">Корисні ресурси та сервіси</span>
-          </div>
+    <div class="p-5 sm:p-6 pb-4 border-b border-slate-800 flex items-center justify-between shrink-0">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-slate-900 border border-emerald-500/40 shrink-0 flex items-center justify-center shadow-lg">
+          <i data-lucide="hard-hat" class="w-5 h-5 text-emerald-300"></i>
         </div>
-        <button id="closeDrawerBtn" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer" title="Закрити панель">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+        <div>
+          <h3 class="font-bold text-sm text-white leading-tight">Панель навігації</h3>
+          <span class="text-[11px] text-slate-400">Корисні ресурси та сервіси</span>
+        </div>
       </div>
+      <button id="closeDrawerBtn" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer" title="Закрити панель">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
 
       <!-- РОЗДІЛ 1: Офіційні сайти (зі скролом усередині випадаючого списку) -->
-      <div id="subpanelContainer" class="mt-4 relative">
+      <div class="px-5 sm:px-6 pt-4 pb-2 shrink-0 relative overflow-visible">
+      <div id="subpanelContainer" class="relative">
         <div id="subpanelTrigger" class="flex items-center justify-between p-3 bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 rounded-xl cursor-pointer transition shadow-md group select-none">
           <div class="flex items-center gap-3">
             <div class="p-2 bg-emerald-500/20 text-emerald-400 rounded-lg group-hover:bg-emerald-500 group-hover:text-slate-950 transition">
@@ -147,6 +147,7 @@
           </div>
         </div>
 
+        <!-- Висувне вікно: на комп'ютері висить ПОВЕРХ САЙТУ праворуч, без розширення бічної панелі -->
         <div id="subpanelFlyout" class="absolute left-0 right-0 top-full mt-2 sm:mt-0 sm:left-full sm:top-0 sm:ml-3 sm:w-80 bg-slate-900 border border-slate-700 rounded-2xl p-4 shadow-2xl opacity-0 invisible sm:transform sm:-translate-x-2 transition-all duration-300 z-[100] pointer-events-none">
           <div class="hidden sm:block absolute -left-4 top-0 w-4 h-full"></div>
           <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-800">
@@ -155,7 +156,8 @@
             </span>
             <span class="text-[10px] text-emerald-400 font-semibold">13 активних посилань</span>
           </div>
-          <div class="space-y-1.5 max-h-[420px] overflow-y-auto pr-1 archive-scroll" id="drawerOfficialLinks"></div>
+          <!-- Самі 13 посилань зручно скроляться всередині цього висувного віконця -->
+          <div class="space-y-1.5 max-h-[380px] sm:max-h-[420px] overflow-y-auto pr-1 archive-scroll" id="drawerOfficialLinks"></div>
         </div>
       </div>
 
