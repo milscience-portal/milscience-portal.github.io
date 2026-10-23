@@ -88,24 +88,6 @@
 <body class="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased relative">
 
   <!-- ============================================================ -->
-  <!-- ПЛАВАЮЧИЙ ВІДЖЕТ СТАТИСТИКИ (ФІКСОВАНИЙ СПРАВА ЗВЕРХУ) -->
-  <!-- ============================================================ -->
-  <div class="fixed top-24 right-4 sm:right-6 z-40 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl p-3 shadow-xl flex flex-col gap-2 text-xs text-slate-200 pointer-events-none transition-all duration-300">
-    <div class="font-bold text-[10px] text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-1 mb-1 text-center">Статистика</div>
-    <div class="flex items-center gap-2.5">
-      <i data-lucide="eye" class="w-4 h-4 text-blue-400"></i>
-      <span>Перегляди: <strong id="siteViews" class="text-white">1252</strong></span>
-    </div>
-    <div class="flex items-center gap-2.5">
-      <div class="relative w-4 h-4 flex items-center justify-center">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-      </div>
-      <span>Онлайн: <strong id="siteOnline" class="text-white">3</strong></span>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
   <!-- ВИСУВНА БІЧНА ПАНЕЛЬ (DRAWER) З ФІКСОВАНОЮ ШАПКОЮ ТА СКРОЛОМ У РОЗДІЛАХ -->
   <!-- ============================================================ -->
   <div id="drawerOverlay" class="fixed inset-0 bg-slate-950/60 z-50 hidden transition-opacity duration-300"></div>
@@ -784,20 +766,6 @@
   <!-- ============================================================ -->
   <script>
     lucide.createIcons();
-
-    // === СТАБІЛЬНИЙ ВІДЖЕТ СТАТИСТИКИ (БЕЗ СТРИБАННЯ ЦИФР) ===
-    let views = parseInt(localStorage.getItem('vo_site_views')) || 1252;
-
-    // Збільшуємо перегляд лише один раз за сесію відвідувача
-    if (!sessionStorage.getItem('vo_session_counted')) {
-      views += 1;
-      localStorage.setItem('vo_site_views', views);
-      sessionStorage.setItem('vo_session_counted', 'true');
-    }
-    document.getElementById('siteViews').innerText = views;
-
-    // Стабільний показник онлайн без випадкових коливань
-    document.getElementById('siteOnline').innerText = 3;
 
     // === ВИСУВНА ПАНЕЛЬ ТА НАДІЙНЕ КЕРУВАННЯ ПІДПАНЕЛЛЮ ===
     const openDrawerBtn = document.getElementById('openDrawerBtn');
