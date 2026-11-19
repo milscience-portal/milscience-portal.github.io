@@ -523,7 +523,7 @@
   </section>
 
   <!-- ============================================================ -->
-  <!-- 6. ДАШБОРД: РЕЄСТР 77 НАУКОВИХ ЖУРНАЛІВ (43 UA + 34 INT) -->
+  <!-- 6. ДАШБОРД: РЕЄСТР 78 НАУКОВИХ ЖУРНАЛІВ (44 UA + 34 INT) -->
   <!-- ============================================================ -->
   <section id="hub" class="bg-slate-900 text-white py-16">
     <div class="max-w-7xl mx-auto px-4">
@@ -553,7 +553,7 @@
 
           <div class="flex flex-wrap gap-1.5 bg-slate-900 p-1.5 rounded-lg border border-slate-700 text-xs">
             <button type="button" id="filterAll" class="px-3 py-1 rounded-md bg-blue-600 text-white font-medium transition cursor-pointer">Всі</button>
-            <button type="button" id="filterUa" class="px-3 py-1 rounded-md text-slate-400 hover:text-white transition cursor-pointer">Україна (43)</button>
+            <button type="button" id="filterUa" class="px-3 py-1 rounded-md text-slate-400 hover:text-white transition cursor-pointer">Україна (44)</button>
             <button type="button" id="filterInt" class="px-3 py-1 rounded-md text-slate-400 hover:text-white transition cursor-pointer">Зарубіжні (34)</button>
             <button type="button" id="filterFree" class="px-3 py-1 rounded-md text-slate-400 hover:text-emerald-400 transition cursor-pointer">Безкоштовні</button>
           </div>
@@ -930,12 +930,13 @@
       lucide.createIcons();
     }
 
-    // === БАЗА 77 НАУКОВИХ ЖУРНАЛІВ (43 UA + 34 INT) ===
+    // === БАЗА 78 НАУКОВИХ ЖУРНАЛІВ (44 UA + 34 INT) ===
     const JOURNALS_DATA = [
       { name: "Військова освіта (Military Education)", founder: "НУОУ", scope: "Військова освіта, підготовка військовослужбовців, воєнна наука", url: "https://znp-vo.nuou.org.ua/index", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
       { name: "Військова наука (Military Science)", founder: "ЦНДІ ЗСУ", scope: "Стратегічні дослідження, розвиток ОВТ, кібербезпека", url: "https://themilitaryscience.com/index.php/journal/about", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
       { name: "Збірник наукових праць ЦВСД НУОУ", founder: "НУОУ (Центр воєнно-стратегічних досліджень)", scope: "Воєнно-стратегічні дослідження, національна безпека", url: "https://znp-cvsd.nuou.org.ua/", isUa: true, isFree: true, lang: "Укр / Eng", freq: "3 рази/рік", category: "Фахове «Б»" },
       { name: "Безпека держави", founder: "Національна академія НГУ", scope: "Державна безпека, охорона держкордону", url: "https://sts.nangu.edu.ua/issue/view/20360", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
+      { name: "Відкрита наука та інновації", founder: "ДНТБУ", scope: "Результати наукових досліджень та впровадження дослідницьких практик з питань: відкритої науки, відкритих даних,  розвитку дослідницької інфраструктури, управління даними досліджень на принципах FAIR", url: "https://journal.dntb.gov.ua/osi/index", isUa: true, isFree: true, lang: "Укр / Eng", freq: "2 рази/рік", category: "Фахове «Б»" },
       { name: "Збірник наукових праць НАДПСУ", founder: "НАДПСУ", scope: "Безпека кордону, діяльність сил сектору оборони", url: "https://periodica.nadpsu.edu.ua/index.php/military_tech", isUa: true, isFree: false, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
       { name: "Наука і техніка Повітряних Сил ЗСУ", founder: "ХНУПС ім. Івана Кожедуба", scope: "Бойове застосування авіації, ЗРВ, радіотехнічні системи", url: "https://journal-hnups.com.ua/index.php/nitps", isUa: true, isFree: false, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
       { name: "Наука і оборона", founder: "НУОУ", scope: "Воєнна безпека держави, стратегія, планування, НАТО", url: "https://nio.nuou.org.ua/", isUa: true, isFree: true, lang: "Укр / Eng", freq: "4 рази/рік", category: "Фахове «Б»" },
